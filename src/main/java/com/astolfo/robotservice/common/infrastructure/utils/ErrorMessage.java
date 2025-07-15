@@ -4,9 +4,7 @@ import com.astolfo.robotservice.common.service.template.StringTemplate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import love.forte.simbot.message.Message;
 import love.forte.simbot.message.Messages;
-import love.forte.simbot.message.Text;
 
 @NoArgsConstructor
 @AllArgsConstructor
