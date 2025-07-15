@@ -1,0 +1,33 @@
+server:
+  port: 8080
+  address: 0.0.0.0
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 5MB
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://8.138.136.39:3306/qq_robot?characterEncoding=utf-8&serverTimeZone=Asia/Shanghai
+    username: root
+    password: 1234567890
+  jackson:
+    time-zone: Asia/Shanghai
+    date-time-format: yyyy-MM-dd HH:mm:ss
+    date-format: yyyy-MM-dd
+    time-format: HH:mm:ss
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: isDeleted
+      logic-delete-value: true
+      logic-not-delete-value: false
+      id-type: auto
+  mapper-locations: classpath*:/mapper/**/*.xml
+
+base-url:
+  codeforces: https://codeforces.com/api
