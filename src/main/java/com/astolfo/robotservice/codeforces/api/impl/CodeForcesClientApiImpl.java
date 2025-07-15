@@ -1,6 +1,8 @@
 package com.astolfo.robotservice.codeforces.api.impl;
 
 import com.astolfo.robotservice.codeforces.api.CodeForcesClientApi;
+import com.astolfo.robotservice.codeforces.common.Constant;
+import com.astolfo.robotservice.codeforces.common.ResponseStatus;
 import com.astolfo.robotservice.codeforces.api.impl.handle.CustomUserHandle;
 import com.astolfo.robotservice.codeforces.api.impl.handle.HandleType;
 import com.astolfo.robotservice.codeforces.model.dto.CodeForcesResponse;
@@ -29,10 +31,6 @@ public class CodeForcesClientApiImpl implements CodeForcesClientApi {
 
     private static final Pattern INVALID_HANDLE_PATTERN = Pattern.compile("handles:\\sUser\\swith\\shandle\\s(.*?)\\snot\\sfound");
 
-    private static final String OK_STATUS = "OK";
-
-    private static final String FAILED_STATUS = "FAILED";
-
     private final WebClient webClient;
 
     private Map<HandleType, CustomUserHandle> customUserHandleMap;
@@ -53,7 +51,7 @@ public class CodeForcesClientApiImpl implements CodeForcesClientApi {
     @Override
     public Mono<UserValidationResult> getValidUserInfoIteratively(List<String> initialHandles, boolean checkHistoricHandles) {
         if (CollectionUtils.isEmpty(initialHandles)) {
-            return Mono.just(new UserValidationResult(CodeForcesResponse.emptyResponse(), new ArrayList<>()));
+            return Mono.just(UserValidationResult.empty());
         } else {
             return validateHandlesRecursively(new ArrayList<>(initialHandles), checkHistoricHandles, new ArrayList<>());
         }
@@ -87,15 +85,15 @@ public class CodeForcesClientApiImpl implements CodeForcesClientApi {
             List<String> invalidHandles
     ) {
         if (handles.isEmpty()) {
-            return Mono.just(new UserValidationResult(CodeForcesResponse.errorResponse(), invalidHandles));
+            return Mono.just(UserValidationResult.error(invalidHandles));
         } else {
             return fetchUserInfo(handles, checkHistoricHandles).flatMap(response -> {
-                if (OK_STATUS.equals(response.getStatus())) {
-                    return Mono.just(new UserValidationResult(response, invalidHandles));
-                } else {
-                    return handleInvalidResponse(response, handles, checkHistoricHandles, invalidHandles);
-                }
-            });
+                        if (Constant.OK.equals(response.getStatus())) {
+                            return Mono.just(UserValidationResult.success(response, invalidHandles));
+                        } else {
+                            return handleInvalidResponse(response, handles, checkHistoricHandles, invalidHandles);
+                        }
+                    });
         }
     }
 
@@ -103,16 +101,15 @@ public class CodeForcesClientApiImpl implements CodeForcesClientApi {
         if (CollectionUtils.isEmpty(handles)) {
             return Mono.just(CodeForcesResponse.emptyResponse());
         } else {
-            return webClient
-                    .get()
+            return webClient.get()
                     .uri(uriBuilder -> uriBuilder
                             .path("/user.info")
                             .queryParam("handles", String.join(";", handles))
                             .queryParam("checkHistoricHandles", checkHistoricHandles)
-                            .build()
-                    )
+                            .build())
                     .exchangeToMono(response -> customUserHandleMap.get(HandleType.typeOf(response)).handle(response));
         }
+
     }
 
     private Mono<UserValidationResult> handleInvalidResponse(
@@ -126,10 +123,9 @@ public class CodeForcesClientApiImpl implements CodeForcesClientApi {
                 .map(invalidHandle -> {
                     invalidHandles.add(invalidHandle);
                     handles.remove(invalidHandle);
-
                     return validateHandlesRecursively(handles, checkHistoricHandles, invalidHandles);
                 })
-                .orElse(Mono.just(new UserValidationResult(CodeForcesResponse.errorResponse(), invalidHandles)));
+                .orElse(Mono.just(UserValidationResult.error(invalidHandles)));
     }
 
     private Optional<String> extractInvalidHandle(String comment) {
@@ -140,5 +136,6 @@ public class CodeForcesClientApiImpl implements CodeForcesClientApi {
 
             return matcher.find() ? Optional.of(matcher.group(1)) : Optional.empty();
         }
+
     }
 }

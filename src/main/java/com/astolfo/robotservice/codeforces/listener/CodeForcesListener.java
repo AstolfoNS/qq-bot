@@ -1,6 +1,6 @@
 package com.astolfo.robotservice.codeforces.listener;
 
-import com.astolfo.robotservice.common.infrastructure.utils.ErrorMessage;
+import com.astolfo.robotservice.codeforces.common.Constant;
 import com.astolfo.robotservice.codeforces.service.CodeForcesService;
 import io.micrometer.common.util.StringUtils;
 import jakarta.annotation.Resource;
@@ -14,6 +14,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
@@ -44,17 +45,17 @@ public class CodeForcesListener {
                 .flatMap(messages -> Mono.fromFuture(event.replyAsync(messages)))
                 .then()
                 .onErrorResume(exception -> Mono
-                        .fromFuture(event.replyAsync(ErrorMessage.info("CodeForcesListener:getCodeForcesUserInfo", exception.getMessage())))
+                        .fromFuture(event.replyAsync(exception.getMessage()))
                         .then())
                 .toFuture();
     }
 
-    @Filter("^/cf\\s+rating\\s+{{handle,(\\w+)}}\\s+{{numberString,(\\d+)}}")
+    @Filter("^/cf\\s+rating\\s+{{handle,(\\w+)}}(?:\\s+{{numberString,(\\d+)}})?")
     @Listener
     public CompletableFuture<?> getCodeForcesUserRatingHistory(
             MessageEvent event,
             @FilterValue("handle") String handle,
-            @FilterValue("numberString") String numberString
+            @FilterValue(value = "numberString", required = false) String numberString
     ) {
         int number;
 
@@ -64,12 +65,16 @@ public class CodeForcesListener {
             number = Integer.MAX_VALUE;
         }
 
+        if (Objects.isNull(numberString)) {
+            number = Constant.MAX_RATING_HISTORY_SIZE;
+        }
+
         return codeForcesService
                 .processUserRatingHistory(handle, number)
                 .flatMap(messages -> Mono.fromFuture(event.replyAsync(messages)))
                 .then()
                 .onErrorResume(exception -> Mono
-                        .fromFuture(event.replyAsync(ErrorMessage.info("CodeForcesListener:getCodeForcesUserRatingHistory", exception.getMessage())))
+                        .fromFuture(event.replyAsync(exception.getMessage()))
                         .then())
                 .toFuture();
     }

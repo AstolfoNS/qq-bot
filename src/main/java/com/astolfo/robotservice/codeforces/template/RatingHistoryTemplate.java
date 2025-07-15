@@ -1,9 +1,9 @@
-package com.astolfo.robotservice.codeforces.service.template;
+package com.astolfo.robotservice.codeforces.template;
 
 import com.astolfo.robotservice.codeforces.model.dto.RatingHistory;
 import com.astolfo.robotservice.common.infrastructure.utils.MessagesUtil;
 import com.astolfo.robotservice.common.infrastructure.utils.TimeConverter;
-import com.astolfo.robotservice.common.service.template.StringTemplate;
+import com.astolfo.robotservice.common.template.StringTemplate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.annotation.Resource;
 import love.forte.simbot.message.Messages;

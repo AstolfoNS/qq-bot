@@ -1,4 +1,4 @@
-package com.astolfo.robotservice.common.service.template;
+package com.astolfo.robotservice.common.template;
 
 import love.forte.simbot.message.Messages;
 import love.forte.simbot.message.Text;

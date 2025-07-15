@@ -1,4 +1,4 @@
-package com.astolfo.robotservice.codeforces.service.template;
+package com.astolfo.robotservice.codeforces.template;
 
 import com.astolfo.robotservice.codeforces.model.dto.UserInfo;
 import com.astolfo.robotservice.common.infrastructure.utils.TimeConverter;
