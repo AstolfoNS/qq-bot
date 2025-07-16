@@ -14,4 +14,8 @@ public class MessagesUtil {
                         .toList()
         );
     }
+
+    public String analysisOneBotText() {
+        return "";
+    }
 }
