@@ -21,7 +21,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @Component
 public class CommonListener {
 
-    @Filter("^/chat\\s+(.*)")
+    @Filter("^/chat\\s+[\\s\\S]*")
     @Listener
     public CompletableFuture<?> chat(MessageEvent event) {
         List<Message.Element> elementList = MessagesUtil.analysisToElement(event);
