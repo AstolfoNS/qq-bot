@@ -1,6 +1,5 @@
 package com.astolfo.robotservice.common.listener;
 
-import com.astolfo.robotservice.common.infrastructure.utils.MessagesUtil;
 import lombok.extern.slf4j.Slf4j;
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotText;
 import love.forte.simbot.event.MessageEvent;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Stream;
@@ -22,12 +20,6 @@ import java.util.stream.Stream;
 @Slf4j
 @Component
 public class CommonListener {
-
-//    @Filter("^/chat\\s+{{message,(.*)}}")
-//    @Listener
-//    public CompletableFuture<?> chat(MessageEvent event, @FilterValue("message") String message) {
-//        return event.replyAsync(message);
-//    }
 
     @Filter("^/chat\\s+(.*)")
     @Listener
