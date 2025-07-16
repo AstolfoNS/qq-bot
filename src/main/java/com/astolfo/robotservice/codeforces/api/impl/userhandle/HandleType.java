@@ -1,4 +1,4 @@
-package com.astolfo.robotservice.codeforces.api.impl.handle;
+package com.astolfo.robotservice.codeforces.api.impl.userhandle;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

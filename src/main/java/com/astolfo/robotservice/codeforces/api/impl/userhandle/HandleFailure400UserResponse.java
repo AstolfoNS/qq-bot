@@ -1,4 +1,4 @@
-package com.astolfo.robotservice.codeforces.api.impl.handle;
+package com.astolfo.robotservice.codeforces.api.impl.userhandle;
 
 import com.astolfo.robotservice.codeforces.model.dto.CodeForcesResponse;
 import com.astolfo.robotservice.codeforces.model.dto.UserInfo;
@@ -8,15 +8,18 @@ import org.springframework.web.reactive.function.client.ClientResponse;
 import reactor.core.publisher.Mono;
 
 @Component
-public class HandleSuccess200UserResponse implements CustomUserHandle {
+public class HandleFailure400UserResponse implements CustomUserHandle {
 
     @Override
     public HandleType support() {
-        return HandleType.SUCCESS200;
+        return HandleType.FAILURE400;
     }
 
     @Override
     public Mono<CodeForcesResponse<UserInfo>> handle(ClientResponse clientResponse) {
-        return clientResponse.bodyToMono(new ParameterizedTypeReference<>() {});
+        return clientResponse
+                .bodyToMono(new ParameterizedTypeReference<CodeForcesResponse<UserInfo>>() {})
+                .flatMap(Mono::just)
+                .switchIfEmpty(Mono.error(new RuntimeException("Received 400 error with empty body from Codeforces API. Status: " + clientResponse.statusCode())));
     }
 }

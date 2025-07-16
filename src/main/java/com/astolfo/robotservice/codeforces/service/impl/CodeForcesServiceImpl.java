@@ -2,7 +2,6 @@ package com.astolfo.robotservice.codeforces.service.impl;
 
 import com.astolfo.robotservice.codeforces.api.CodeForcesClientApi;
 import com.astolfo.robotservice.codeforces.common.Constant;
-import com.astolfo.robotservice.codeforces.common.ResponseStatus;
 import com.astolfo.robotservice.codeforces.template.RatingHistoryTemplate;
 import com.astolfo.robotservice.common.template.StringTemplate;
 import com.astolfo.robotservice.codeforces.template.UserInfoTemplate;

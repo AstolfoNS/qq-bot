@@ -1,4 +1,4 @@
-package com.astolfo.robotservice.codeforces.api.impl.handle;
+package com.astolfo.robotservice.codeforces.api.impl.userhandle;
 
 import com.astolfo.robotservice.codeforces.model.dto.CodeForcesResponse;
 import com.astolfo.robotservice.codeforces.model.dto.UserInfo;
