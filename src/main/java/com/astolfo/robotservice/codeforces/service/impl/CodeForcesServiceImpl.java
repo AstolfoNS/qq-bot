@@ -2,6 +2,7 @@ package com.astolfo.robotservice.codeforces.service.impl;
 
 import com.astolfo.robotservice.codeforces.api.CodeForcesClientApi;
 import com.astolfo.robotservice.codeforces.common.Constant;
+import com.astolfo.robotservice.common.infrastructure.utils.CommonConstant;
 import com.astolfo.robotservice.codeforces.template.RatingHistoryTemplate;
 import com.astolfo.robotservice.common.template.StringTemplate;
 import com.astolfo.robotservice.codeforces.template.UserInfoTemplate;
@@ -40,7 +41,7 @@ public class CodeForcesServiceImpl implements CodeForcesService {
                         if (Constant.OK.equals(response.getStatus())) {
                             sink.next(userInfoTemplate.toMessages(response.getResult()));
                         } else {
-                            sink.error(new RuntimeException(Constant.FAILED_MESSAGE + response.getComment()));
+                            sink.error(new RuntimeException(CommonConstant.FAILED_MESSAGE + response.getComment()));
                         }
                     });
         }
@@ -57,7 +58,7 @@ public class CodeForcesServiceImpl implements CodeForcesService {
                          if (Constant.OK.equals(response.getStatus())) {
                              sink.next(ratingHistoryTemplate.toMessages(response.getResult(), handle, Math.max(0, response.getResultSize() - number)));
                          } else {
-                             sink.error(new RuntimeException(Constant.FAILED_MESSAGE + response.getComment()));
+                             sink.error(new RuntimeException(CommonConstant.FAILED_MESSAGE + response.getComment()));
                          }
                      });
         }

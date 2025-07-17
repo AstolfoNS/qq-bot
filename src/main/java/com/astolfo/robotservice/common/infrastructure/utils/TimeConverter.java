@@ -25,7 +25,6 @@ public class TimeConverter {
         this.timeZone = timeZone;
     }
 
-
     public static LocalDateTime secondsToDate(long totalSeconds, String timeZone) {
         if (Objects.isNull(timeZone) || timeZone.trim().isEmpty()) {
             log.error("Warning: ZoneId string is null or empty, using system default zone.");
@@ -52,4 +51,17 @@ public class TimeConverter {
     public String secondsToDateString(long totalSeconds) throws JsonProcessingException {
         return objectMapper.writeValueAsString(secondsToLocalDateTime(totalSeconds)).replaceAll("^\"|\"$", "");
     }
+
+     public static LocalDateTime millisToDate(long totalMilliseconds, ZoneId zoneId) {
+        return LocalDateTime.ofInstant(Instant.ofEpochMilli(totalMilliseconds), zoneId);
+    }
+
+    public LocalDateTime millisToLocalDateTime(long totalMilliseconds) {
+        return millisToDate(totalMilliseconds, ZoneId.of(timeZone));
+    }
+
+    public String millisToDateString(long totalMilliseconds) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(millisToLocalDateTime(totalMilliseconds)).replaceAll("^\"|\"$", "");
+    }
+
 }

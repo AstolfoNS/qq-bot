@@ -21,29 +21,29 @@ import reactor.core.publisher.Mono;
 import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Component
 public class CodeForcesClientApiImpl implements CodeForcesClientApi {
 
-    private static final Pattern INVALID_HANDLE_PATTERN = Pattern.compile("handles:\\sUser\\swith\\shandle\\s(.*?)\\snot\\sfound");
 
     private final WebClient webClient;
 
-    private Map<HandleType, CustomUserHandle> customUserHandleMap;
+    private final Map<HandleType, CustomUserHandle> customUserHandleMap;
 
-    @Autowired
-    public void setCustomUserHandleMap(List<CustomUserHandle> customUserHandleList) {
+
+    public CodeForcesClientApiImpl(
+            WebClient.Builder webClientBuilder,
+            @Value("${base-url.codeforces}") String baseUrl,
+            List<CustomUserHandle> customUserHandleList
+        ) {
+        this.webClient = webClientBuilder.baseUrl(baseUrl).build();
+
         this.customUserHandleMap = customUserHandleList
                 .stream()
                 .filter(Objects::nonNull)
                 .collect(Collectors.toMap(CustomUserHandle::support, Function.identity()));
-    }
-
-    public CodeForcesClientApiImpl(WebClient.Builder webClientBuilder, @Value("${base-url.codeforces}") String baseUrl) {
-        this.webClient = webClientBuilder.baseUrl(baseUrl).build();
     }
 
 
@@ -74,7 +74,7 @@ public class CodeForcesClientApiImpl implements CodeForcesClientApi {
                         } else {
                             return Mono.just(CodeForcesResponse.errorResponse());
                         }
-                    } );
+                    });
         }
     }
 
@@ -133,7 +133,7 @@ public class CodeForcesClientApiImpl implements CodeForcesClientApi {
         if (!StringUtils.hasText(comment)) {
             return Optional.empty();
         } else {
-            Matcher matcher = INVALID_HANDLE_PATTERN.matcher(comment);
+            Matcher matcher = Constant.INVALID_HANDLE_PATTERN.matcher(comment);
 
             return matcher.find() ? Optional.of(matcher.group(1)) : Optional.empty();
         }

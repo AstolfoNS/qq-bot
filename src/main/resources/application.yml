@@ -31,3 +31,4 @@ mybatis-plus:
 
 base-url:
   codeforces: https://codeforces.com/api
+  lolicon: https://api.lolicon.app
