@@ -34,33 +34,33 @@ public class CodeForcesClientApiImpl implements CodeForcesClientApi {
     public Mono<ValidationResult<UserInfo>> getValidUserInfoIteratively(List<String> initialHandles, boolean checkHistoricHandles) {
         if (CollectionUtils.isEmpty(initialHandles)) {
             return Mono.just(ValidationResult.empty());
-        } else {
-            return validateHandlesRecursively(new ArrayList<>(initialHandles), checkHistoricHandles, new ArrayList<>());
         }
+
+        return validateHandlesRecursively(new ArrayList<>(initialHandles), checkHistoricHandles, new ArrayList<>());
     }
 
     @Override
     public Mono<CodeForcesResponse<RatingHistory>> getUserRatingHistory(String handle) {
         if (!StringUtils.hasText(handle)) {
             return Mono.just(CodeForcesResponse.errorResponse());
-        } else {
-            return webClient
-                    .get()
-                    .uri(uriBuilder -> uriBuilder
-                            .path("/user.rating")
-                            .queryParam("handle", handle)
-                            .build()
-                    )
-                    .exchangeToMono(response -> {
-                        if (response.statusCode().is2xxSuccessful()) {
-                            log.info("getUserRatingHistory:response = {}", response);
-
-                            return response.bodyToMono(new ParameterizedTypeReference<>() {});
-                        } else {
-                            return Mono.just(CodeForcesResponse.errorResponse());
-                        }
-                    });
         }
+
+        return webClient
+                .get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/user.rating")
+                        .queryParam("handle", handle)
+                        .build()
+                )
+                .exchangeToMono(response -> {
+                    if (response.statusCode().is2xxSuccessful()) {
+                        log.info("getUserRatingHistory:response = {}", response);
+
+                        return response.bodyToMono(new ParameterizedTypeReference<>() {});
+                    }
+
+                    return Mono.just(CodeForcesResponse.errorResponse());
+                });
     }
 
     private Mono<ValidationResult<UserInfo>> validateHandlesRecursively(
@@ -70,45 +70,46 @@ public class CodeForcesClientApiImpl implements CodeForcesClientApi {
     ) {
         if (handles.isEmpty()) {
             return Mono.just(ValidationResult.error(invalidHandles));
-        } else {
-            return fetchUserInfo(handles, checkHistoricHandles).flatMap(response -> {
-                if (Constant.OK.equals(response.getStatus())) {
-                    return Mono.just(ValidationResult.success(response, invalidHandles));
-                } else {
-                    return handleInvalidResponse(response, handles, checkHistoricHandles, invalidHandles);
-                }
-            });
         }
+
+        return fetchUserInfo(handles, checkHistoricHandles).flatMap(response -> {
+            if (Constant.OK.equals(response.getStatus())) {
+                return Mono.just(ValidationResult.success(response, invalidHandles));
+            }
+
+            return handleInvalidResponse(response, handles, checkHistoricHandles, invalidHandles);
+        });
+
     }
 
     private Mono<CodeForcesResponse<UserInfo>> fetchUserInfo(List<String> handles, boolean checkHistoricHandles) {
         if (CollectionUtils.isEmpty(handles)) {
             return Mono.just(CodeForcesResponse.emptyResponse());
-        } else {
-            return webClient
-                    .get()
-                    .uri(uriBuilder -> uriBuilder
-                            .path("/user.info")
-                            .queryParam("handles", String.join(";", handles))
-                            .queryParam("checkHistoricHandles", checkHistoricHandles)
-                            .build()
-                    )
-                    .exchangeToMono(response -> {
-                        log.info("getUserInfo:response = {}", response);
-
-                        if (response.statusCode().value() >= 200 && response.statusCode().value() <= 300) {
-                            return response.bodyToMono(new ParameterizedTypeReference<>() {});
-                        }
-                        if (response.statusCode().value() >= 400 && response.statusCode().value() <= 500) {
-                            return response
-                                    .bodyToMono(new ParameterizedTypeReference<CodeForcesResponse<UserInfo>>() {})
-                                    .flatMap(Mono::just)
-                                    .switchIfEmpty(Mono.error(new RuntimeException("Received 400 error with empty body from Codeforces API. Status: " + response.statusCode())));
-                        }
-
-                        return response.createException().flatMap(Mono::error);
-                    });
         }
+
+        return webClient
+                .get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/user.info")
+                        .queryParam("handles", String.join(";", handles))
+                        .queryParam("checkHistoricHandles", checkHistoricHandles)
+                        .build()
+                )
+                .exchangeToMono(response -> {
+                    log.info("getUserInfo:response = {}", response);
+
+                    if (response.statusCode().value() >= 200 && response.statusCode().value() <= 300) {
+                        return response.bodyToMono(new ParameterizedTypeReference<>() {});
+                    }
+                    if (response.statusCode().value() >= 400 && response.statusCode().value() <= 500) {
+                        return response
+                                .bodyToMono(new ParameterizedTypeReference<CodeForcesResponse<UserInfo>>() {})
+                                .flatMap(Mono::just)
+                                .switchIfEmpty(Mono.error(new RuntimeException("Received 400 error with empty body from Codeforces API. Status: " + response.statusCode())));
+                    }
+
+                    return response.createException().flatMap(Mono::error);
+                });
     }
 
     private Mono<ValidationResult<UserInfo>> handleInvalidResponse(
@@ -131,10 +132,10 @@ public class CodeForcesClientApiImpl implements CodeForcesClientApi {
     private Optional<String> extractInvalidHandle(String comment) {
         if (!StringUtils.hasText(comment)) {
             return Optional.empty();
-        } else {
-            Matcher matcher = Constant.INVALID_HANDLE_PATTERN.matcher(comment);
-
-            return matcher.find() ? Optional.of(matcher.group(1)) : Optional.empty();
         }
+
+        Matcher matcher = Constant.INVALID_HANDLE_PATTERN.matcher(comment);
+
+        return matcher.find() ? Optional.of(matcher.group(1)) : Optional.empty();
     }
 }

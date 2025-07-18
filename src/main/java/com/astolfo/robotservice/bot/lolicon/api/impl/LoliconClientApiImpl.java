@@ -37,9 +37,9 @@ public class LoliconClientApiImpl implements LoliconClientApi {
                         log.info("getPhotoV1:response = {}", response);
 
                         return response.bodyToMono(new ParameterizedTypeReference<>() {});
-                    } else {
-                        return Mono.just(LoliconResponseV1.errorResponse());
                     }
+
+                    return Mono.just(LoliconResponseV1.errorResponse());
                 });
     }
 
@@ -56,9 +56,9 @@ public class LoliconClientApiImpl implements LoliconClientApi {
 
                     if (response.statusCode().is2xxSuccessful()) {
                         return response.bodyToMono(new ParameterizedTypeReference<>() {});
-                    } else {
-                        return Mono.just(LoliconResponseV2.errorResponse());
                     }
+
+                    return Mono.just(LoliconResponseV2.errorResponse());
                 });
     }
 

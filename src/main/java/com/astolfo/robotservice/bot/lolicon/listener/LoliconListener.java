@@ -37,7 +37,6 @@ public class LoliconListener {
         return loliconService
                 .processPhotoV2()
                 .flatMap(messages -> Mono.fromFuture(event.replyAsync(messages)))
-                .timeout(Duration.ofSeconds(30))
                 .then()
                 .onErrorResume(exception -> Mono
                         .fromFuture(event.replyAsync(exception.getMessage()))
