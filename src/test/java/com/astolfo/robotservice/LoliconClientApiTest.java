@@ -1,6 +1,6 @@
 package com.astolfo.robotservice;
 
-import com.astolfo.robotservice.lolicon.api.LoliconClientApi;
+import com.astolfo.robotservice.bot.lolicon.api.LoliconClientApi;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;

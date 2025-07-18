@@ -1,7 +1,7 @@
 package com.astolfo.robotservice;
 
-import com.astolfo.robotservice.common.infrastructure.utils.TimeConverter;
-import com.astolfo.robotservice.codeforces.service.CodeForcesService;
+import com.astolfo.robotservice.infrastructure.utils.TimeConverter;
+import com.astolfo.robotservice.bot.codeforces.service.CodeForcesService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;

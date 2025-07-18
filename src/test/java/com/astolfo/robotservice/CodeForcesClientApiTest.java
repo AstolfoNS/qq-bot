@@ -1,8 +1,8 @@
 package com.astolfo.robotservice;
 
-import com.astolfo.robotservice.codeforces.api.CodeForcesClientApi;
-import com.astolfo.robotservice.codeforces.model.dto.CodeForcesResponse;
-import com.astolfo.robotservice.codeforces.model.dto.RatingHistory;
+import com.astolfo.robotservice.bot.codeforces.api.CodeForcesClientApi;
+import com.astolfo.robotservice.bot.codeforces.model.dto.CodeForcesResponse;
+import com.astolfo.robotservice.bot.codeforces.model.dto.RatingHistory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
