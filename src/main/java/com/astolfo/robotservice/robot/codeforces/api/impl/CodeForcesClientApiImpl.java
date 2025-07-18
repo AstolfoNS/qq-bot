@@ -1,7 +1,7 @@
 package com.astolfo.robotservice.robot.codeforces.api.impl;
 
 import com.astolfo.robotservice.robot.codeforces.api.CodeForcesClientApi;
-import com.astolfo.robotservice.robot.codeforces.common.Constant;
+import com.astolfo.robotservice.robot.basic.constant.CodeForcesConstant;
 import com.astolfo.robotservice.robot.codeforces.model.dto.CodeForcesResponse;
 import com.astolfo.robotservice.robot.codeforces.model.dto.UserInfo;
 import com.astolfo.robotservice.robot.codeforces.model.dto.RatingHistory;
@@ -73,7 +73,7 @@ public class CodeForcesClientApiImpl implements CodeForcesClientApi {
         }
 
         return fetchUserInfo(handles, checkHistoricHandles).flatMap(response -> {
-            if (Constant.OK.equals(response.getStatus())) {
+            if (CodeForcesConstant.OK.equals(response.getStatus())) {
                 return Mono.just(ValidationResult.success(response, invalidHandles));
             }
 
@@ -134,7 +134,7 @@ public class CodeForcesClientApiImpl implements CodeForcesClientApi {
             return Optional.empty();
         }
 
-        Matcher matcher = Constant.INVALID_HANDLE_PATTERN.matcher(comment);
+        Matcher matcher = CodeForcesConstant.INVALID_HANDLE_PATTERN.matcher(comment);
 
         return matcher.find() ? Optional.of(matcher.group(1)) : Optional.empty();
     }

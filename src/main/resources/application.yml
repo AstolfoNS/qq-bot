@@ -14,6 +14,9 @@ spring:
     username: root
     password: 1234567890
 
+  cache:
+    type: redis
+
   data:
     redis:
       host: 8.138.136.39
@@ -25,6 +28,19 @@ spring:
     date-time-format: yyyy-MM-dd HH:mm:ss
     date-format: yyyy-MM-dd
     time-format: HH:mm:ss
+
+  security:
+    jwt:
+      key: DodoDozidodoZiziziDododoziDoZidoziziZiziziDodozi
+      expire: 86400000
+      issuer: Astolfo
+      jwt-algorithm: HS256
+      jca-algorithm: HmacSHA256
+
+custom:
+  redis:
+    redisson-address: redis://8.138.136.39:6379
+    redisson-database: 0
 
 mybatis-plus:
   configuration:

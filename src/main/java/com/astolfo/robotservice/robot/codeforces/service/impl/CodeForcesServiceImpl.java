@@ -1,7 +1,7 @@
 package com.astolfo.robotservice.robot.codeforces.service.impl;
 
 import com.astolfo.robotservice.robot.codeforces.api.CodeForcesClientApi;
-import com.astolfo.robotservice.robot.codeforces.common.Constant;
+import com.astolfo.robotservice.robot.basic.constant.CodeForcesConstant;
 import com.astolfo.robotservice.robot.codeforces.model.template.RatingHistoryTemplate;
 import com.astolfo.robotservice.robot.basic.template.StringTemplate;
 import com.astolfo.robotservice.robot.codeforces.model.template.UserInfoTemplate;
@@ -30,14 +30,14 @@ public class CodeForcesServiceImpl implements CodeForcesService {
 
     @Override
     public Mono<List<Messages>> processUserInfo(List<String> handles, boolean checkHistoricHandles) {
-        if(handles.size() > Constant.MAX_REQUEST_USER_LIST_SIZE) {
-            return Mono.just(List.of(StringTemplate.toMessages(String.format("最多只能查询%d条用户信息", Constant.MAX_REQUEST_USER_LIST_SIZE))));
+        if(handles.size() > CodeForcesConstant.MAX_REQUEST_USER_LIST_SIZE) {
+            return Mono.just(List.of(StringTemplate.toMessages(String.format("最多只能查询%d条用户信息", CodeForcesConstant.MAX_REQUEST_USER_LIST_SIZE))));
         }
 
         return codeForcesClientApi
                 .getValidUserInfoIteratively(handles, checkHistoricHandles)
                 .handle((response, sink) -> {
-                    if (Constant.OK.equals(response.getStatus())) {
+                    if (CodeForcesConstant.OK.equals(response.getStatus())) {
                         log.info("processUserInfo:response = {}", response);
 
                         sink.next(userInfoTemplate.toMessages(response.getResult()));
@@ -49,14 +49,14 @@ public class CodeForcesServiceImpl implements CodeForcesService {
 
     @Override
     public Mono<Messages> processUserRatingHistory(String handle, int number) {
-        if (number > Constant.MAX_RATING_HISTORY_SIZE) {
-            return Mono.just(StringTemplate.toMessages(String.format( "最多只支持查询最近的%d条数据", Constant.MAX_RATING_HISTORY_SIZE)));
+        if (number > CodeForcesConstant.MAX_RATING_HISTORY_SIZE) {
+            return Mono.just(StringTemplate.toMessages(String.format( "最多只支持查询最近的%d条数据", CodeForcesConstant.MAX_RATING_HISTORY_SIZE)));
         }
 
         return codeForcesClientApi
                 .getUserRatingHistory(handle)
                 .handle((response, sink) -> {
-                    if (Constant.OK.equals(response.getStatus())) {
+                    if (CodeForcesConstant.OK.equals(response.getStatus())) {
                         log.info("processUserRatingHistory:response = {}", response);
 
                         sink.next(ratingHistoryTemplate.toMessages(response.getResult(), handle, Math.max(0, response.getResultSize() - number)));

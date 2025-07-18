@@ -1,6 +1,6 @@
 package com.astolfo.robotservice.robot.codeforces.listener;
 
-import com.astolfo.robotservice.robot.codeforces.common.Constant;
+import com.astolfo.robotservice.robot.basic.constant.CodeForcesConstant;
 import com.astolfo.robotservice.robot.codeforces.service.CodeForcesService;
 import io.micrometer.common.util.StringUtils;
 import jakarta.annotation.Resource;
@@ -66,7 +66,7 @@ public class CodeForcesListener {
         }
 
         if (Objects.isNull(numberString)) {
-            number = Constant.MAX_RATING_HISTORY_SIZE;
+            number = CodeForcesConstant.MAX_RATING_HISTORY_SIZE;
         }
 
         return codeForcesService

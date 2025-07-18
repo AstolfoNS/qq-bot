@@ -1,8 +1,8 @@
-package com.astolfo.robotservice.robot.codeforces.common;
+package com.astolfo.robotservice.robot.basic.constant;
 
 import java.util.regex.Pattern;
 
-public class Constant {
+public class CodeForcesConstant {
 
     public static final int MAX_REQUEST_USER_LIST_SIZE = 10;
 

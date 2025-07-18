@@ -24,26 +24,17 @@ import java.util.TimeZone;
 @Configuration
 public class JacksonConfig {
 
-    private final String dateTimeFormat;
+    @Value("#{jacksonProperties.dateTimeFormat}")
+    private String dateTimeFormat;
 
-    private final String dateFormat;
+    @Value("#{jacksonProperties.dateFormat}")
+    private String dateFormat;
 
-    private final String timeFormat;
+    @Value("#{jacksonProperties.timeFormat}")
+    private String timeFormat;
 
-    private final String timeZone;
-
-
-    public JacksonConfig(
-            @Value("${spring.jackson.date-time-format}") String dateTimeFormat,
-            @Value("${spring.jackson.date-format}") String dateFormat,
-            @Value("${spring.jackson.time-format}") String timeFormat,
-            @Value("${spring.jackson.time-zone}") String timeZone
-    ) {
-        this.dateTimeFormat = dateTimeFormat;
-        this.dateFormat = dateFormat;
-        this.timeFormat = timeFormat;
-        this.timeZone = timeZone;
-    }
+    @Value("#{jacksonProperties.timeZone}")
+    private String timeZone;
 
 
     @Bean

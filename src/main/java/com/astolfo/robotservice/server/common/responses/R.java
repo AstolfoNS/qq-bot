@@ -1,6 +1,6 @@
-package com.astolfo.robotservice.infrastructure.response;
+package com.astolfo.robotservice.server.common.responses;
 
-import com.astolfo.robotservice.infrastructure.enums.HttpCode;
+import com.astolfo.robotservice.server.common.enums.HttpCode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
