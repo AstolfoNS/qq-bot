@@ -2,8 +2,6 @@ package com.astolfo.robotservice.bot.codeforces.api.impl;
 
 import com.astolfo.robotservice.bot.codeforces.api.CodeForcesClientApi;
 import com.astolfo.robotservice.bot.codeforces.common.Constant;
-import com.astolfo.robotservice.bot.codeforces.api.impl.userhandle.CustomUserHandle;
-import com.astolfo.robotservice.bot.codeforces.api.impl.userhandle.HandleType;
 import com.astolfo.robotservice.bot.codeforces.model.dto.CodeForcesResponse;
 import com.astolfo.robotservice.bot.codeforces.model.dto.UserInfo;
 import com.astolfo.robotservice.bot.codeforces.model.dto.RatingHistory;
@@ -18,31 +16,17 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.regex.Matcher;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
 public class CodeForcesClientApiImpl implements CodeForcesClientApi {
 
-
     private final WebClient webClient;
 
-    private final Map<HandleType, CustomUserHandle> customUserHandleMap;
 
-
-    public CodeForcesClientApiImpl(
-            WebClient.Builder webClientBuilder,
-            @Value("${base-url.codeforces}") String baseUrl,
-            List<CustomUserHandle> customUserHandleList
-        ) {
+    public CodeForcesClientApiImpl(WebClient.Builder webClientBuilder, @Value("${base-url.codeforces}") String baseUrl) {
         this.webClient = webClientBuilder.baseUrl(baseUrl).build();
-
-        this.customUserHandleMap = customUserHandleList
-                .stream()
-                .filter(Objects::nonNull)
-                .collect(Collectors.toMap(CustomUserHandle::support, Function.identity()));
     }
 
 
@@ -111,8 +95,18 @@ public class CodeForcesClientApiImpl implements CodeForcesClientApi {
                     )
                     .exchangeToMono(response -> {
                         log.info("getUserInfo:response = {}", response);
-                        
-                        return customUserHandleMap.get(HandleType.typeOf(response)).handle(response);
+
+                        if (response.statusCode().value() >= 200 && response.statusCode().value() <= 300) {
+                            return response.bodyToMono(new ParameterizedTypeReference<>() {});
+                        }
+                        if (response.statusCode().value() >= 400 && response.statusCode().value() <= 500) {
+                            return response
+                                    .bodyToMono(new ParameterizedTypeReference<CodeForcesResponse<UserInfo>>() {})
+                                    .flatMap(Mono::just)
+                                    .switchIfEmpty(Mono.error(new RuntimeException("Received 400 error with empty body from Codeforces API. Status: " + response.statusCode())));
+                        }
+
+                        return response.createException().flatMap(Mono::error);
                     });
         }
     }
