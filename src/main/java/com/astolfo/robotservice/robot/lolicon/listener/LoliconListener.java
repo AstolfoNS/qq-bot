@@ -17,19 +17,6 @@ public class LoliconListener {
     private LoliconService loliconService;
 
 
-    @Filter("^/setu\\s+v1")
-    @Listener
-    public CompletableFuture<?> getPhotoV1(MessageEvent event) {
-        return loliconService
-                .processPhotoV1()
-                .flatMap(messages -> Mono.fromFuture(event.replyAsync(messages)))
-                .then()
-                .onErrorResume(exception -> Mono
-                        .fromFuture(event.replyAsync(exception.getMessage()))
-                        .then())
-                .toFuture();
-    }
-
     @Filter("^/setu\\s+v2")
     @Listener
     public CompletableFuture<?> getPhotoV2(MessageEvent event) {

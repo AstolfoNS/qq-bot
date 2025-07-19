@@ -22,17 +22,6 @@ public class LoliconServiceImpl implements LoliconService {
 
 
     @Override
-    public Mono<Messages> processPhotoV1() {
-        return loliconClientApi
-                .getPhotoV1()
-                .handle((response, sink) -> {
-                    log.info("processPhotoV1:response = {}", response);
-
-                    sink.next(photoInfoTemplate.toMessages(response.getData().getFirst()));
-                });
-    }
-
-    @Override
     public Mono<Messages> processPhotoV2() {
         return loliconClientApi
                 .getPhotoV2()

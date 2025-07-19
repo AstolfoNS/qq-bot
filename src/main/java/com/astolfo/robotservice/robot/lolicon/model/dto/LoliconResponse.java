@@ -10,28 +10,27 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class LoliconResponseV2<T> {
+public class LoliconResponse<T> {
 
     private String error;
 
     private List<T> data;
 
 
-    public static <T> LoliconResponseV2<T> emptyResponse() {
-        LoliconResponseV2<T> emptyResponse = new LoliconResponseV2<>();
+    public static <T> LoliconResponse<T> emptyResponse() {
+        LoliconResponse<T> emptyResponse = new LoliconResponse<>();
 
         emptyResponse.setData(new ArrayList<>());
 
         return emptyResponse;
-
     }
 
-    public static <T> LoliconResponseV2<T> errorResponse() {
+    public static <T> LoliconResponse<T> errorResponse() {
         return errorResponse("null");
     }
 
-    public static <T> LoliconResponseV2<T> errorResponse(String error) {
-        LoliconResponseV2<T> response = new LoliconResponseV2<>();
+    public static <T> LoliconResponse<T> errorResponse(String error) {
+        LoliconResponse<T> response = new LoliconResponse<>();
 
         response.setError(error);
         response.setData(new ArrayList<>());
