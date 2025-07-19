@@ -2,4 +2,51 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.astolfo.robotservice.server.mapper.UserMapper">
+
+    <resultMap id="permissionResultMap" type="com.astolfo.robotservice.server.model.entity.PermissionEntity">
+        <id column="p_id" property="id"/>
+        <result column="p_symbol" property="symbol"/>
+        <result column="p_description" property="description"/>
+        <result column="p_url" property="url"/>
+        <result column="p_http_method" property="httpMethod"/>
+        <result column="p_point" property="point"/>
+        <result column="p_order_num" property="orderNum"/>
+        <result column="p_enabled" property="enabled"/>
+        <result column="p_create_time" property="createTime"/>
+        <result column="p_update_time" property="updateTime"/>
+        <result column="p_is_deleted" property="isDeleted"/>
+    </resultMap>
+
+    <select id="getPermissionListByUsername" resultMap="permissionResultMap">
+        SELECT
+            p.id AS p_id,
+            p.symbol AS p_symbol,
+            p.description AS p_description,
+            p.url AS p_url,
+            p.http_method AS p_http_method,
+            p.point AS p_point,
+            p.order_num AS p_order_num,
+            p.enabled AS p_enabled,
+            p.create_time AS p_create_time,
+            p.update_time AS p_update_time,
+            p.is_deleted AS p_is_deleted
+        FROM
+            `user` u
+        JOIN
+            user_role ur ON u.id = ur.user_id
+        JOIN
+            `role` r ON ur.role_id = r.id
+        JOIN
+            role_permission rp ON r.id = rp.role_id
+        JOIN
+            permission p ON rp.permission_id = p.id
+        WHERE
+            u.username = #{username}
+            AND u.is_deleted = FALSE AND u.enabled = TRUE
+            AND ur.is_deleted = FALSE
+            AND r.is_deleted = FALSE AND r.enabled = TRUE
+            AND rp.is_deleted = FALSE
+            AND p.is_deleted = FALSE AND p.enabled = TRUE
+    </select>
+
 </mapper>

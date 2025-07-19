@@ -24,33 +24,6 @@ public class LoginUser implements UserDetails {
 
     private Collection<String> authorityList;
 
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Data
-    public static class Details {
-
-        private Long userId;
-
-        private String username;
-
-        private String password;
-
-        private Collection<String> authorityList;
-    }
-
-    private LoginUser(Details loginUserDetails) {
-        setUserId(loginUserDetails.getUserId());
-
-        setUsername(loginUserDetails.getUsername());
-
-        setPassword(loginUserDetails.getPassword());
-
-        setAuthorityList(loginUserDetails.getAuthorityList());
-    }
-
-    public static LoginUser of(Details loginUserDetails) {
-        return new LoginUser(loginUserDetails);
-    }
 
     @JsonIgnore
     public String getStringId() {
