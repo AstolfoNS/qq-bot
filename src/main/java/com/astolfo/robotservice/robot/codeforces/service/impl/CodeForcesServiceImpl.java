@@ -41,9 +41,9 @@ public class CodeForcesServiceImpl implements CodeForcesService {
                         log.info("processUserInfo:response = {}", response);
 
                         sink.next(userInfoTemplate.toMessages(response.getResult()));
+                    } else {
+                        sink.error(new RuntimeException(response.getComment()));
                     }
-
-                    sink.error(new RuntimeException(response.getComment()));
                 });
     }
 
@@ -60,9 +60,9 @@ public class CodeForcesServiceImpl implements CodeForcesService {
                         log.info("processUserRatingHistory:response = {}", response);
 
                         sink.next(ratingHistoryTemplate.toMessages(response.getResult(), handle, Math.max(0, response.getResultSize() - number)));
+                    } else {
+                        sink.error(new RuntimeException(response.getComment()));
                     }
-
-                    sink.error(new RuntimeException(response.getComment()));
                 });
     }
 
