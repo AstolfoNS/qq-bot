@@ -1,8 +1,10 @@
 package com.astolfo.robotservice.robot.lolicon.model.template;
 
+import com.astolfo.robotservice.infrastructure.utils.MessagesUtil;
 import com.astolfo.robotservice.infrastructure.utils.TimeConverter;
 import com.astolfo.robotservice.robot.lolicon.model.dto.PhotoInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.ktor.http.ContentType;
 import jakarta.annotation.Resource;
 import love.forte.simbot.message.Messages;
 import love.forte.simbot.message.OfflineURIImage;
@@ -10,6 +12,7 @@ import love.forte.simbot.message.Text;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
+import java.util.List;
 
 @Component
 public class PhotoInfoTemplate {
@@ -18,11 +21,11 @@ public class PhotoInfoTemplate {
     private TimeConverter timeConverter;
 
 
-    public Messages toMessages(PhotoInfo photoInfo) throws JsonProcessingException {
+    public Messages bodytoMessages(PhotoInfo photoInfo) throws JsonProcessingException {
         return Messages
                 .builder()
-                .add(OfflineURIImage.of(URI.create(photoInfo.getUrls().getOriginal())))
                 .add(Text.of(String.format("""
+                        - link: %s
                         - r18: %s
                         - title: %s
                         - author: %s
@@ -30,7 +33,9 @@ public class PhotoInfoTemplate {
                             %s
                         ]
                         - uploadDate: %s
+                        
                         """,
+                        photoInfo.getUrls().getOriginal(),
                         photoInfo.getR18(),
                         photoInfo.getTitle(),
                         photoInfo.getAuthor(),
@@ -38,6 +43,21 @@ public class PhotoInfoTemplate {
                         timeConverter.millisToDateString(photoInfo.getUploadDate())
                 )))
                 .build();
+    }
+
+    public Messages toMessages(List<PhotoInfo> photoInfoList) throws JsonProcessingException {
+         return MessagesUtil.merge(
+                 photoInfoList
+                         .stream()
+                         .map(photoInfo -> {
+                             try {
+                                 return this.bodytoMessages(photoInfo);
+                             } catch (JsonProcessingException exception) {
+                                 throw new RuntimeException(exception);
+                             }
+                         })
+                         .toArray(Messages[]::new)
+         );
     }
 
 }

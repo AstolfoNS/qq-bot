@@ -1,5 +1,7 @@
 package com.astolfo.robotservice.robot.lolicon.service.impl;
 
+import com.astolfo.robotservice.robot.basic.constant.LoliconConstant;
+import com.astolfo.robotservice.robot.basic.template.StringTemplate;
 import com.astolfo.robotservice.robot.lolicon.api.LoliconClientApi;
 import com.astolfo.robotservice.robot.lolicon.service.LoliconService;
 import com.astolfo.robotservice.robot.lolicon.model.template.PhotoInfoTemplate;
@@ -22,14 +24,22 @@ public class LoliconServiceImpl implements LoliconService {
 
 
     @Override
-    public Mono<Messages> processPhotoV2() {
+    public Mono<Messages> processPhoto(
+            String r18,
+            int number,
+            String tag
+    ) {
+        if (number > LoliconConstant.MAX_PHOTO_SIZE) {
+            return Mono.just(StringTemplate.toMessages(String.format("最多只能查询%d张图片 >_<", LoliconConstant.MAX_PHOTO_SIZE)));
+        }
+
         return loliconClientApi
-                .getPhotoV2()
+                .getPhoto(r18, number, tag)
                 .handle((response, sink) -> {
                     try {
-                        log.info("processPhotoV2:response = {}", response);
+                        log.info("processPhoto:response = {}", response);
 
-                        sink.next(photoInfoTemplate.toMessages(response.getData().getFirst()));
+                        sink.next(photoInfoTemplate.toMessages(response.getData()));
                     } catch (JsonProcessingException exception) {
                         sink.error(new RuntimeException(exception));
                     }

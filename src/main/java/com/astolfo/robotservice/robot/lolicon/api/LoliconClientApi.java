@@ -6,6 +6,10 @@ import reactor.core.publisher.Mono;
 
 public interface LoliconClientApi {
 
-    Mono<LoliconResponse<PhotoInfo>> getPhotoV2();
+    Mono<LoliconResponse<PhotoInfo>> getPhoto(
+            String r18,
+            int number,
+            String tag
+    );
 
 }

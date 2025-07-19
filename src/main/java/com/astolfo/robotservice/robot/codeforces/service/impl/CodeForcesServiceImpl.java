@@ -50,7 +50,7 @@ public class CodeForcesServiceImpl implements CodeForcesService {
     @Override
     public Mono<Messages> processUserRatingHistory(String handle, int number) {
         if (number > CodeForcesConstant.MAX_RATING_HISTORY_SIZE) {
-            return Mono.just(StringTemplate.toMessages(String.format( "最多只支持查询最近的%d条数据", CodeForcesConstant.MAX_RATING_HISTORY_SIZE)));
+            return Mono.just(StringTemplate.toMessages(String.format("最多只支持查询最近的%d条数据", CodeForcesConstant.MAX_RATING_HISTORY_SIZE)));
         }
 
         return codeForcesClientApi

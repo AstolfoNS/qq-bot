@@ -1,5 +1,6 @@
 package com.astolfo.robotservice.robot.lolicon.api.impl;
 
+import com.astolfo.robotservice.robot.basic.constant.LoliconConstant;
 import com.astolfo.robotservice.robot.lolicon.api.LoliconClientApi;
 import com.astolfo.robotservice.robot.lolicon.model.dto.LoliconResponse;
 import com.astolfo.robotservice.robot.lolicon.model.dto.PhotoInfo;
@@ -22,11 +23,18 @@ public class LoliconClientApiImpl implements LoliconClientApi {
     }
 
     @Override
-    public Mono<LoliconResponse<PhotoInfo>> getPhotoV2() {
+    public Mono<LoliconResponse<PhotoInfo>> getPhoto(
+            String r18,
+            int number,
+            String tag
+    ) {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/setu/v2")
+                        .queryParam("r18", r18)
+                        .queryParam("num", number)
+                        .queryParam("tag", tag)
                         .build()
                 )
                 .exchangeToMono(response -> {
