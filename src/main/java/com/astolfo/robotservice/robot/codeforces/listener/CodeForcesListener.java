@@ -25,7 +25,7 @@ public class CodeForcesListener {
     private CodeForcesService codeForcesService;
 
 
-    @Filter("^/cf\\s+user{{checkHistoricHandles,(?:\\s+(?:--true|--false))?}}{{handles,(?:\\s+\\w+)+}}$")
+    @Filter("^/cf\\s+user{{checkHistoricHandles,(?:\\s+(?:--true|--false))?}}{{handles,(?:\\s+\\S+)+}}$")
     @Listener
     public CompletableFuture<?> getCodeForcesUserInfo(
             MessageEvent event,
@@ -50,7 +50,7 @@ public class CodeForcesListener {
                 .toFuture();
     }
 
-    @Filter("^/cf\\s+rating\\s+{{handle,(\\w+)}}(?:\\s+{{numberString,(\\d+)}})?")
+    @Filter("^/cf\\s+rating\\s+{{handle,(\\S+)}}(?:\\s+{{numberString,(\\d+)}})?")
     @Listener
     public CompletableFuture<?> getCodeForcesUserRatingHistory(
             MessageEvent event,
