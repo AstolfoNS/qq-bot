@@ -1,6 +1,8 @@
 package com.astolfo.robotservice.robot.basic.listener;
 
+import com.astolfo.robotservice.infrastructure.utils.CommonUtil;
 import com.astolfo.robotservice.infrastructure.utils.MessagesUtil;
+import com.astolfo.robotservice.infrastructure.utils.TextElementUtil;
 import lombok.extern.slf4j.Slf4j;
 import love.forte.simbot.component.onebot.v11.message.segment.OneBotText;
 import love.forte.simbot.event.MessageEvent;
@@ -12,10 +14,15 @@ import love.forte.simbot.quantcat.common.annotations.FilterValue;
 import love.forte.simbot.quantcat.common.annotations.Listener;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 @Component
@@ -24,15 +31,7 @@ public class BasicListener {
     @Filter("^/chat\\s+[\\s\\S]*")
     @Listener
     public CompletableFuture<?> chat(MessageEvent event) {
-        List<Message.Element> elementList = MessagesUtil.analysisToElement(event);
-
-        if (CollectionUtils.isEmpty(elementList) || !(elementList.getFirst() instanceof OneBotText.Element firstElement)) {
-            return event.replyAsync("error");
-        } else {
-            elementList.set(0, Text.of(firstElement.getText().substring("/chat ".length())));
-
-            return event.replyAsync(Messages.of(elementList));
-        }
+        return event.replyAsync(Messages.of(MessagesUtil.removePrefix(event, "/chat ")));
     }
 
     @Filter("^/rand\\s+{{stringNumber1,(\\d+)}}\\s+{{stringNumber2,(\\d+)}}")
@@ -49,10 +48,53 @@ public class BasicListener {
             long min = Math.min(number1, number2);
             long max = Math.max(number1, number2);
 
-            return event.replyAsync(String.valueOf(ThreadLocalRandom.current().nextLong(min, max + 1)));
+            return event.replyAsync(String.valueOf(CommonUtil.random(min, max)));
         } catch (NumberFormatException exception) {
             return event.replyAsync("/rand 输入数字过大无法计算");
         }
+    }
+
+    private static final Object WHITESPACE_SEPARATOR = new Object();
+
+    @Filter("^/roll\\s+[\\s\\S]*")
+    @Listener
+    public CompletableFuture<?> roll(MessageEvent event) {
+        List<Message.Element> inputElements = MessagesUtil.removePrefix(event, "/roll ");
+
+        List<List<Message.Element>> options = new ArrayList<>();
+        List<Message.Element> currentOption = new ArrayList<>();
+
+        List<Object> tokens = inputElements
+                .stream()
+                .flatMap(element -> {
+                    if (TextElementUtil.hasText(element)) {
+                        return Arrays
+                                .stream(TextElementUtil.getText(element).split("(?<=\\s)|(?=\\s+)"))
+                                .map(token -> token.isBlank() ? WHITESPACE_SEPARATOR : Text.of(token));
+                    } else {
+                        return Stream.of(element);
+                    }
+                })
+                .toList();
+
+        for (Object token : tokens) {
+            if (token == WHITESPACE_SEPARATOR) {
+                if (!currentOption.isEmpty()) {
+                    options.add(currentOption);
+                    currentOption = new ArrayList<>();
+                }
+            } else {
+                currentOption.add((Message.Element) token);
+            }
+        }
+        if (!currentOption.isEmpty()) {
+            options.add(currentOption);
+        }
+        if (options.isEmpty()) {
+            return event.replyAsync(Messages.of(Text.of("error: 无效的选项")));
+        }
+
+        return event.replyAsync(Messages.of(options.get((int) CommonUtil.random(0, options.size() - 1))));
     }
 
 }
