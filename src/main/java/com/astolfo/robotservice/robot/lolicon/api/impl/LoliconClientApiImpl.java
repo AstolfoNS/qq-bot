@@ -34,7 +34,7 @@ public class LoliconClientApiImpl implements LoliconClientApi {
                         .path("/setu/v2")
                         .queryParam("r18", r18)
                         .queryParam("num", number)
-                        .queryParam("tag", tag)
+                        .queryParam("keyword", tag)
                         .build()
                 )
                 .exchangeToMono(response -> {

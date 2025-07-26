@@ -25,7 +25,7 @@ public class PhotoInfoTemplate {
         return Messages
                 .builder()
                 .add(Text.of(String.format("""
-                        - link: %s
+                        - link: [%s]
                         - r18: %s
                         - title: %s
                         - author: %s

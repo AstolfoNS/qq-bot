@@ -4,7 +4,6 @@ import com.astolfo.robotservice.server.common.enums.HttpCode;
 import com.astolfo.robotservice.server.common.responses.R;
 import com.astolfo.robotservice.infrastructure.utils.ServletUtil;
 import jakarta.annotation.Resource;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.AuthenticationException;
