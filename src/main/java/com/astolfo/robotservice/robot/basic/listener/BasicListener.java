@@ -28,33 +28,14 @@ import java.util.stream.Stream;
 @Component
 public class BasicListener {
 
+    private static final Object WHITESPACE_SEPARATOR = new Object();
+
+
     @Filter("^/chat\\s+[\\s\\S]*")
     @Listener
     public CompletableFuture<?> chat(MessageEvent event) {
         return event.replyAsync(Messages.of(MessagesUtil.removePrefix(event, "/chat ")));
     }
-
-    @Filter("^/rand\\s+{{stringNumber1,(\\d+)}}\\s+{{stringNumber2,(\\d+)}}")
-    @Listener
-    public CompletableFuture<?> rand(
-            MessageEvent event,
-            @FilterValue("stringNumber1") String stringNumber1,
-            @FilterValue("stringNumber2") String stringNumber2
-    ) {
-        try {
-            long number1 = Long.parseLong(stringNumber1);
-            long number2 = Long.parseLong(stringNumber2);
-
-            long min = Math.min(number1, number2);
-            long max = Math.max(number1, number2);
-
-            return event.replyAsync(String.valueOf(CommonUtil.random(min, max)));
-        } catch (NumberFormatException exception) {
-            return event.replyAsync("/rand 输入数字过大无法计算");
-        }
-    }
-
-    private static final Object WHITESPACE_SEPARATOR = new Object();
 
     @Filter("^/roll\\s+[\\s\\S]*")
     @Listener
@@ -97,4 +78,23 @@ public class BasicListener {
         return event.replyAsync(Messages.of(options.get((int) CommonUtil.random(0, options.size() - 1))));
     }
 
+    @Filter("^/rand\\s+{{stringNumber1,(\\d+)}}\\s+{{stringNumber2,(\\d+)}}")
+    @Listener
+    public CompletableFuture<?> rand(
+            MessageEvent event,
+            @FilterValue("stringNumber1") String stringNumber1,
+            @FilterValue("stringNumber2") String stringNumber2
+    ) {
+        try {
+            long number1 = Long.parseLong(stringNumber1);
+            long number2 = Long.parseLong(stringNumber2);
+
+            long min = Math.min(number1, number2);
+            long max = Math.max(number1, number2);
+
+            return event.replyAsync(String.valueOf(CommonUtil.random(min, max)));
+        } catch (NumberFormatException exception) {
+            return event.replyAsync("error: 输入数字过大无法计算");
+        }
+    }
 }
