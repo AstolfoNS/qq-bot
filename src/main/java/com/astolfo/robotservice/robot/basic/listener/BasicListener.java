@@ -2,7 +2,6 @@ package com.astolfo.robotservice.robot.basic.listener;
 
 import com.astolfo.robotservice.infrastructure.utils.CommonUtil;
 import com.astolfo.robotservice.infrastructure.utils.MessagesUtil;
-import com.astolfo.robotservice.robot.basic.constant.WhitespaceElement;
 import lombok.extern.slf4j.Slf4j;
 import love.forte.simbot.event.MessageEvent;
 import love.forte.simbot.message.Message;
@@ -13,7 +12,6 @@ import love.forte.simbot.quantcat.common.annotations.FilterValue;
 import love.forte.simbot.quantcat.common.annotations.Listener;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
