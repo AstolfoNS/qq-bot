@@ -8,9 +8,10 @@ import java.util.concurrent.ThreadLocalRandom;
 public class CommonUtil {
 
     public static long random(long begin, long end) throws NumberFormatException {
-
-        log.debug("random begin: {}, end: {}", begin, end);
-
         return ThreadLocalRandom.current().nextLong(begin, end + 1);
+    }
+
+    public static long randomFromZero(long end) throws NumberFormatException {
+        return ThreadLocalRandom.current().nextLong(end + 1);
     }
 }
