@@ -1,6 +1,6 @@
 package com.astolfo.robotservice.infrastructure.utils;
 
-import com.astolfo.robotservice.robot.basic.constant.WhitespaceElement;
+import com.astolfo.robotservice.robot.domain.basic.constant.WhitespaceElement;
 import love.forte.simbot.event.MessageEvent;
 import love.forte.simbot.message.Message;
 import love.forte.simbot.message.Messages;
