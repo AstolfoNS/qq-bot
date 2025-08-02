@@ -6,8 +6,10 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Aspect
@@ -25,15 +27,22 @@ public class ServiceAspect {
         log.info("Method Signature: {}", joinPoint.getSignature());
         log.info("Arguments: {}", Arrays.toString(joinPoint.getArgs()));
 
-        Object result = joinPoint.proceed();
+        Object returnResult = joinPoint.proceed();
 
-        log.info("robot service return: ");
-        log.info("Return value: {}", result);
+        if (!(returnResult instanceof Mono<?> future)) {
+            return returnResult;
+        }
 
-        log.info("----------------------------------------end robot service");
-        log.info("\n");
-
-        return result;
+        return future
+                .doOnSuccess(value -> {
+                    log.info("robot service return: ");
+                    log.info("Return value: {}", value);
+                    log.info("----------------------------------------end robot service");
+                })
+                .doOnError(throwable -> {
+                    log.info("robot service return: ");
+                    log.error("An error occurred during method execution: ", throwable);
+                    log.info("----------------------------------------end robot service");
+                });
     }
-
 }

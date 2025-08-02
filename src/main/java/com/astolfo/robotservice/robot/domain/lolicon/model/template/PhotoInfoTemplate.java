@@ -21,7 +21,9 @@ public class PhotoInfoTemplate {
     public Messages bodytoMessages(PhotoInfo photoInfo) throws JsonProcessingException {
         return Messages
                 .builder()
-                .add(Text.of(String.format("""
+                .add(Text.of(String.format(
+                        """
+                        
                         - link: [%s]
                         - r18: %s
                         - title: %s
@@ -30,7 +32,6 @@ public class PhotoInfoTemplate {
                             %s
                         ]
                         - uploadDate: %s
-                        
                         """,
                         photoInfo.getUrls().getOriginal(),
                         photoInfo.getR18(),

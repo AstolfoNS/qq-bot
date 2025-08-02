@@ -23,7 +23,7 @@ public class LoliconClientApiImpl implements LoliconClientApi {
     public Mono<LoliconResponse<PhotoInfo>> getPhoto(
             String r18,
             int number,
-            String tag
+            String keyword
     ) {
         return webClient
                 .get()
@@ -31,7 +31,7 @@ public class LoliconClientApiImpl implements LoliconClientApi {
                         .path("/setu/v2")
                         .queryParam("r18", r18)
                         .queryParam("num", number)
-                        .queryParam("keyword", tag)
+                        .queryParam("keyword", keyword)
                         .build()
                 )
                 .exchangeToMono(response -> {

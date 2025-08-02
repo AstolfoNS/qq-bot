@@ -25,6 +25,7 @@ public class UserInfoTemplate {
                 .add(OfflineURIImage.of(URI.create(userInfo.getAvatar())))
                 .add(Text.of(String.format(
                         """
+                        
                         >>>https://codeforces.com/profile/%s<<<
                         - username: %s
                         - contribution: %d

@@ -8,6 +8,8 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Aspect
@@ -25,14 +27,22 @@ public class ListenerAspect {
         log.info("Method Signature: {}", joinPoint.getSignature());
         log.info("Arguments: {}", Arrays.toString(joinPoint.getArgs()));
 
-        Object result = joinPoint.proceed();
+        Object returnResult = joinPoint.proceed();
 
-        log.info("robot listener return: ");
-        log.info("Return value: {}", result);
+        if (!(returnResult instanceof CompletableFuture<?> future)) {
+            return returnResult;
+        }
 
-        log.info("----------------------------------------end robot listener");
+        return future.whenComplete((result, exception) -> {
+            log.info("robot listener return: ");
 
-        return result;
+            if (Objects.nonNull(exception)) {
+                log.error("An error occurred during method execution: ", exception);
+            } else {
+                log.info("Return value: {}", result);
+            }
+
+            log.info("----------------------------------------end robot listener");
+        });
     }
-
 }

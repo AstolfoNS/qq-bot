@@ -25,14 +25,14 @@ public class LoliconServiceImpl implements LoliconService {
     public Mono<Messages> processPhoto(
             String r18,
             int number,
-            String tag
+            String keyword
     ) {
         if (number > LoliconConstant.MAX_PHOTO_SIZE) {
             return Mono.just(StringTemplate.toMessages(String.format("最多只能查询%d张图片 >_<", LoliconConstant.MAX_PHOTO_SIZE)));
         }
 
         return loliconClientApi
-                .getPhoto(r18, number, tag)
+                .getPhoto(r18, number, keyword)
                 .handle((response, sink) -> {
                     try {
                         sink.next(photoInfoTemplate.toMessages(response.getData()));

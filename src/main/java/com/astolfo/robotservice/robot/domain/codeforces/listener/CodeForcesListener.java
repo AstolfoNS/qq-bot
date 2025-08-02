@@ -1,5 +1,6 @@
 package com.astolfo.robotservice.robot.domain.codeforces.listener;
 
+import com.astolfo.robotservice.infrastructure.utils.CommonUtil;
 import com.astolfo.robotservice.robot.domain.basic.constant.CodeForcesConstant;
 import com.astolfo.robotservice.robot.domain.codeforces.service.CodeForcesService;
 import io.micrometer.common.util.StringUtils;
@@ -15,6 +16,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
@@ -57,20 +59,14 @@ public class CodeForcesListener {
             @FilterValue("handle") String handle,
             @FilterValue(value = "numberString", required = false) String numberString
     ) {
-        int number;
-
-        try {
-            number = Integer.parseInt(numberString);
-        } catch (NumberFormatException exception) {
-            number = Integer.MAX_VALUE;
-        }
-
-        if (Objects.isNull(numberString)) {
-            number = CodeForcesConstant.MAX_RATING_HISTORY_SIZE;
-        }
-
         return codeForcesService
-                .processUserRatingHistory(handle, number)
+                .processUserRatingHistory(
+                        handle,
+                        Optional
+                                .ofNullable(numberString)
+                                .map(CommonUtil::praseIntElseMax)
+                                .orElse(CodeForcesConstant.MAX_RATING_HISTORY_SIZE)
+                )
                 .flatMap(messages -> Mono.fromFuture(event.replyAsync(messages)))
                 .then()
                 .onErrorResume(exception -> Mono

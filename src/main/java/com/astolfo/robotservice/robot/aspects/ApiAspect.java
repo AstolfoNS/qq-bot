@@ -6,6 +6,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 
@@ -25,13 +26,22 @@ public class ApiAspect {
         log.info("Method Signature: {}", joinPoint.getSignature());
         log.info("Arguments: {}", Arrays.toString(joinPoint.getArgs()));
 
-        Object result = joinPoint.proceed();
+        Object returnResult = joinPoint.proceed();
 
-        log.info("robot api return: ");
-        log.info("Return value: {}", result);
+        if (!(returnResult instanceof Mono<?> future)) {
+            return returnResult;
+        }
 
-        log.info("----------------------------------------end robot api");
-
-        return result;
+        return future
+                .doOnSuccess(value -> {
+                    log.info("robot api return: ");
+                    log.info("Return value: {}", value);
+                    log.info("----------------------------------------end robot api");
+                })
+                .doOnError(throwable -> {
+                    log.info("robot api return: ");
+                    log.error("An error occurred during method execution: ", throwable);
+                    log.info("----------------------------------------end robot api");
+                });
     }
 }

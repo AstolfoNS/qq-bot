@@ -21,8 +21,8 @@ public class RatingHistoryTemplate {
     public Messages titleToMessages(String handle, int total) {
         return StringTemplate.toMessages(String.format(
                 """
-                %s, total number of contests joined: %d
                 
+                %s, total number of contests joined: %d
                 """,
                 handle, total
         ));
@@ -31,6 +31,7 @@ public class RatingHistoryTemplate {
     public Messages bodyToMessages(RatingHistory ratingHistory) throws JsonProcessingException {
         return StringTemplate.toMessages(String.format(
                 """
+                
                 >>>https://codeforces.com/contest/%d<<<
                 - contestName: %s
                 - username: %s
@@ -38,7 +39,6 @@ public class RatingHistoryTemplate {
                 - ratingUpdateTime: %s
                 - oldRating: %d
                 - newRating: %d
-               
                 """,
                 ratingHistory.getContestId(),
                 ratingHistory.getContestName(),
@@ -66,7 +66,11 @@ public class RatingHistoryTemplate {
             );
     }
 
-    public Messages toMessages(List<RatingHistory> ratingHistoryList, String handle, int skipCount) {
+    public Messages toMessages(
+            List<RatingHistory> ratingHistoryList,
+            String handle,
+            int skipCount
+    ) {
         return MessagesUtil.merge(titleToMessages(handle, ratingHistoryList.size()), contextToMessages(ratingHistoryList, skipCount));
     }
 

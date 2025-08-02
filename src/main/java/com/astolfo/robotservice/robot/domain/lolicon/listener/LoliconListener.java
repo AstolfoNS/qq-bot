@@ -1,5 +1,7 @@
 package com.astolfo.robotservice.robot.domain.lolicon.listener;
 
+import com.astolfo.robotservice.infrastructure.utils.CommonUtil;
+import com.astolfo.robotservice.robot.domain.basic.constant.enums.R18Enum;
 import com.astolfo.robotservice.robot.domain.lolicon.service.LoliconService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
@@ -21,43 +24,25 @@ public class LoliconListener {
     private LoliconService loliconService;
 
 
-    @Filter("^/setu(?:\\s+{{r18,(?:n|y|r)}})?(?:\\s+{{num,(?:\\d+)}})?(?:\\s+{{tag,(.+)}})?")
+    @Filter("^/setu(?:\\s+{{r18,(?:--rand|--true|--false)}})?(?:\\s+{{num,(?:\\d+)}})?(?:\\s+{{keyword,(.+)}})?")
     @Listener
     public CompletableFuture<?> getPhoto(
             MessageEvent event,
             @FilterValue(value = "r18", required = false) String r18,
             @FilterValue(value = "num", required = false) String num,
-            @FilterValue(value = "tag", required = false) String tag
+            @FilterValue(value = "keyword", required = false) String keyword
     ) {
-        String r18Param = "2";
-
-        if (Objects.nonNull(r18)) {
-            if (r18.equals("n")) {
-                r18Param = "0";
-            }
-            if (r18.equals("y")) {
-                r18Param = "1";
-            }
-        }
-
-        int number;
-
-        try {
-            number = Integer.parseInt(num);
-        } catch (NumberFormatException exception) {
-            number = Integer.MAX_VALUE;
-        }
-
-        if (Objects.isNull(num)) {
-            number = 1;
-        }
-
-        if (Objects.isNull(tag)) {
-            tag = "";
-        }
-
         return loliconService
-                .processPhoto(r18Param, number, tag)
+                .processPhoto(
+                        R18Enum.typeOf(r18).getValue(),
+                        Optional
+                                .ofNullable(num)
+                                .map(CommonUtil::praseIntElseMax)
+                                .orElse(1),
+                        Optional
+                                .ofNullable(keyword)
+                                .orElse("")
+                )
                 .flatMap(messages -> Mono.fromFuture(event.replyAsync(messages)))
                 .then()
                 .onErrorResume(exception -> Mono

@@ -13,4 +13,5 @@ public class CodeForcesConstant {
     public static final String FAILED = "FAILED";
 
     public static final Pattern INVALID_HANDLE_PATTERN = Pattern.compile("handles:\\sUser\\swith\\shandle\\s(.*?)\\snot\\sfound");
+
 }
