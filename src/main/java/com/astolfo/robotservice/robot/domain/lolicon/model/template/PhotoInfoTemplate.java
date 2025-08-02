@@ -6,9 +6,11 @@ import com.astolfo.robotservice.robot.domain.lolicon.model.dto.PhotoInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.annotation.Resource;
 import love.forte.simbot.message.Messages;
+import love.forte.simbot.message.OfflineURIImage;
 import love.forte.simbot.message.Text;
 import org.springframework.stereotype.Component;
 
+import java.net.URI;
 import java.util.List;
 
 @Component
