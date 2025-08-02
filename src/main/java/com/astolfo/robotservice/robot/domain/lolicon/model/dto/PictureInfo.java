@@ -9,7 +9,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class PhotoInfo {
+public class PictureInfo {
 
     private long pid;
 

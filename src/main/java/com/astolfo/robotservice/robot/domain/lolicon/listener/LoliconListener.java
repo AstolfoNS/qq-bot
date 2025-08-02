@@ -26,14 +26,14 @@ public class LoliconListener {
 
     @Filter("^/setu(?:\\s+{{r18,(?:--rand|--true|--false)}})?(?:\\s+{{num,(?:\\d+)}})?(?:\\s+{{keyword,(.+)}})?")
     @Listener
-    public CompletableFuture<?> getPhoto(
+    public CompletableFuture<?> getPicture(
             MessageEvent event,
             @FilterValue(value = "r18", required = false) String r18,
             @FilterValue(value = "num", required = false) String num,
             @FilterValue(value = "keyword", required = false) String keyword
     ) {
         return loliconService
-                .processPhoto(
+                .processPicture(
                         R18Enum.typeOf(r18).getValue(),
                         Optional
                                 .ofNullable(num)

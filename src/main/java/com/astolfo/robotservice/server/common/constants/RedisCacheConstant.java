@@ -1,4 +1,4 @@
-package com.astolfo.robotservice.server.common.constant;
+package com.astolfo.robotservice.server.common.constants;
 
 public class RedisCacheConstant {
 

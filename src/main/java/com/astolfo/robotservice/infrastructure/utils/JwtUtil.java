@@ -40,24 +40,25 @@ public class JwtUtil {
     ) {
         return JwtClaimsSet
                 .builder()
-                .subject(loginUser.getStringId())
+                .subject(loginUser.getIdToString())
                 .issuedAt(issuedAt)
                 .issuer(issuer)
                 .expiresAt(issuedAt.plusMillis(expiresInMillis))
                 .build();
     }
 
-    public String generateToken(@NotNull JwtClaimsSet claim) {
-        return jwtEncoder.encode(JwtEncoderParameters.from(JwsHeader.with(MacAlgorithm.valueOf(jwtAlgorithm)).build(), claim)).getTokenValue();
-    }
-
-    public String generateToken(
+     public String generateToken(
             LoginUser loginUser,
             Instant issuedAt,
             Long expiresInMillis
     ) {
         return generateToken(buildChaim(loginUser, issuedAt, expiresInMillis));
     }
+
+    public String generateToken(@NotNull JwtClaimsSet claim) {
+        return jwtEncoder.encode(JwtEncoderParameters.from(JwsHeader.with(MacAlgorithm.valueOf(jwtAlgorithm)).build(), claim)).getTokenValue();
+    }
+
 
     public String generateToken(LoginUser loginUserDetails, Long expireInMillis) {
         return generateToken(loginUserDetails, Instant.now(), expireInMillis);

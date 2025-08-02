@@ -1,5 +1,6 @@
 package com.astolfo.robotservice.server.common.userdetails;
 
+import com.astolfo.robotservice.server.model.entity.UserEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor
@@ -16,7 +18,7 @@ import java.util.stream.Collectors;
 @Data
 public class LoginUser implements UserDetails {
 
-    private Long userId;
+    private Long id;
 
     private String username;
 
@@ -26,8 +28,8 @@ public class LoginUser implements UserDetails {
 
 
     @JsonIgnore
-    public String getStringId() {
-        return userId.toString();
+    public String getIdToString() {
+        return id.toString();
     }
 
     @JsonIgnore

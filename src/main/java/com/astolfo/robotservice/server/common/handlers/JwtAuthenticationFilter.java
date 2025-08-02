@@ -1,9 +1,11 @@
 package com.astolfo.robotservice.server.common.handlers;
 
+import com.astolfo.robotservice.server.common.enums.HttpCode;
 import com.astolfo.robotservice.server.common.userdetails.LoginUser;
 import com.astolfo.robotservice.infrastructure.utils.JwtUtil;
 import com.astolfo.robotservice.infrastructure.utils.RedisCacheUtil;
-import com.astolfo.robotservice.server.common.constant.RedisCacheConstant;
+import com.astolfo.robotservice.server.common.constants.RedisCacheConstant;
+import com.astolfo.robotservice.server.service.AuthenticationService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -11,14 +13,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -30,6 +31,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Resource
     private RedisCacheUtil redisCacheUtil;
 
+    @Lazy
+    @Resource
+    private AuthenticationService authenticationService;
+
 
     @Override
     protected void doFilterInternal(
@@ -39,7 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         String authHeader = request.getHeader("authorization");
 
-        if (!(StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer "))) {
+        if (!isValidAuthHeader(authHeader)) {
             filterChain.doFilter(request, response);
 
             return;
@@ -47,18 +52,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = authHeader.substring("Bearer ".length());
 
-        String userId = jwtUtil.parseToken(token).getStringId();
+        try {
+            Optional<LoginUser> optionalLoginUser = Optional.of(redisCacheUtil.get(RedisCacheConstant.Login_USER_PERFIX.concat(jwtUtil.parseToken(token).getStringId())));
 
-        LoginUser loginUser = redisCacheUtil.get(RedisCacheConstant.Login_USER_PERFIX.concat(userId));
+            optionalLoginUser.ifPresent(loginUser -> authenticationService.setAuthentication(loginUser));
+        } catch (Exception exception) {
+            log.error("JWT认证失败，错误信息: {}", exception.getMessage());
 
-        if (Objects.isNull(loginUser)) {
-            log.error("JWT认证过程中未从redis中找到用户，用户未登录，UserId: {}", userId);
-
-            throw new RuntimeException("用户未登录");
+            response.sendError(HttpCode.UNAUTHORIZED.getCode());
         }
 
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(loginUser, null, loginUser.getAuthorities()));
-
         filterChain.doFilter(request, response);
+    }
+
+    private boolean isValidAuthHeader(String authHeader) {
+        return StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ");
     }
 }

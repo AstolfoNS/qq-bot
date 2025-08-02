@@ -4,7 +4,7 @@ import com.astolfo.robotservice.robot.domain.basic.constant.LoliconConstant;
 import com.astolfo.robotservice.robot.domain.basic.template.StringTemplate;
 import com.astolfo.robotservice.robot.domain.lolicon.api.LoliconClientApi;
 import com.astolfo.robotservice.robot.domain.lolicon.service.LoliconService;
-import com.astolfo.robotservice.robot.domain.lolicon.model.template.PhotoInfoTemplate;
+import com.astolfo.robotservice.robot.domain.lolicon.model.template.PictureInfoTemplate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.annotation.Resource;
 import love.forte.simbot.message.Messages;
@@ -18,11 +18,11 @@ public class LoliconServiceImpl implements LoliconService {
     private LoliconClientApi loliconClientApi;
 
     @Resource
-    private PhotoInfoTemplate photoInfoTemplate;
+    private PictureInfoTemplate pictureInfoTemplate;
 
 
     @Override
-    public Mono<Messages> processPhoto(
+    public Mono<Messages> processPicture(
             String r18,
             int number,
             String keyword
@@ -32,10 +32,10 @@ public class LoliconServiceImpl implements LoliconService {
         }
 
         return loliconClientApi
-                .getPhoto(r18, number, keyword)
+                .getPicture(r18, number, keyword)
                 .handle((response, sink) -> {
                     try {
-                        sink.next(photoInfoTemplate.toMessages(response.getData()));
+                        sink.next(pictureInfoTemplate.toMessages(response.getData()));
                     } catch (JsonProcessingException exception) {
                         sink.error(new RuntimeException(exception));
                     }

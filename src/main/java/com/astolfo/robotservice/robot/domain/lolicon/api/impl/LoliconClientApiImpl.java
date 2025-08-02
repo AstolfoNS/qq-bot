@@ -2,7 +2,7 @@ package com.astolfo.robotservice.robot.domain.lolicon.api.impl;
 
 import com.astolfo.robotservice.robot.domain.lolicon.api.LoliconClientApi;
 import com.astolfo.robotservice.robot.domain.lolicon.model.dto.LoliconResponse;
-import com.astolfo.robotservice.robot.domain.lolicon.model.dto.PhotoInfo;
+import com.astolfo.robotservice.robot.domain.lolicon.model.dto.PictureInfo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
@@ -20,7 +20,7 @@ public class LoliconClientApiImpl implements LoliconClientApi {
     }
 
     @Override
-    public Mono<LoliconResponse<PhotoInfo>> getPhoto(
+    public Mono<LoliconResponse<PictureInfo>> getPicture(
             String r18,
             int number,
             String keyword

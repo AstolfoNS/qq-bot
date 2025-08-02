@@ -8,18 +8,18 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@TableName("photo_tag")
+@TableName("user_permission")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class PhotoTagEntity {
+public class UserPictureEntity {
 
     @TableId
     private Long id;
 
-    private Long photoId;
+    private Long userId;
 
-    private Long tagId;
+    private Long pictureId;
 
     private LocalDateTime createTime;
 

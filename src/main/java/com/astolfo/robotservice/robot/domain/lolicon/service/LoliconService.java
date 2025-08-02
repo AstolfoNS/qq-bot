@@ -5,10 +5,10 @@ import reactor.core.publisher.Mono;
 
 public interface LoliconService {
 
-    Mono<Messages> processPhoto(
+    Mono<Messages> processPicture(
             String r18,
             int number,
-            String tag
+            String keyword
     );
 
 }
