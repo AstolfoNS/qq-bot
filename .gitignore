@@ -33,4 +33,7 @@ build/
 .vscode/
 
 ### application config ###
-application.yml
+**/src/main/resources/application.yml
+
+### robot ###
+**/src/main/resources/simbot-bots/*.bot.json
