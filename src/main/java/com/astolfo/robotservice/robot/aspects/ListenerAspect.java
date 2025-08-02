@@ -7,7 +7,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.Arrays;
 
 @Slf4j
 @Aspect
@@ -19,17 +19,18 @@ public class ListenerAspect {
 
     @Around("listenerMethods()")
     public Object logging(ProceedingJoinPoint joinPoint) throws Throwable {
-        log.info("----------------------------------------begin");
+        log.info("----------------------------------------begin robot listener");
         log.info("robot listener: ");
 
         log.info("Method Signature: {}", joinPoint.getSignature());
-        log.info("Arguments: {}", List.of(joinPoint.getArgs()));
+        log.info("Arguments: {}", Arrays.toString(joinPoint.getArgs()));
 
         Object result = joinPoint.proceed();
 
+        log.info("robot listener return: ");
         log.info("Return value: {}", result);
 
-        log.info("-----------------------------------------end");
+        log.info("----------------------------------------end robot listener");
 
         return result;
     }
