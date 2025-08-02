@@ -1,9 +1,0 @@
-{
-    "component": "simbot.onebot11",
-    "authorization": {
-        "botUniqueId": "3805912450",
-        "apiServerHost": "http://8.138.136.39:6123",
-        "eventServerHost": "ws://8.138.136.39:3001",
-        "accessToken": null
-    }
-}
