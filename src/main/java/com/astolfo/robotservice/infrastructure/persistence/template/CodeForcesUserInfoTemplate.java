@@ -1,6 +1,6 @@
 package com.astolfo.robotservice.infrastructure.persistence.template;
 
-import com.astolfo.robotservice.infrastructure.persistence.model.dto.CodeForcesUserInfo;
+import com.astolfo.robotservice.infrastructure.persistence.model.dto.CodeForcesUserInfoDTO;
 import com.astolfo.robotservice.infrastructure.common.utils.TimeConverter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.annotation.Resource;
@@ -19,10 +19,10 @@ public class CodeForcesUserInfoTemplate {
     private TimeConverter timeConverter;
 
 
-    public Messages toMessages(CodeForcesUserInfo codeForcesUserInfo) throws JsonProcessingException {
+    public Messages toMessages(CodeForcesUserInfoDTO codeForcesUserInfoDTO) throws JsonProcessingException {
         return Messages
                 .builder()
-                .add(OfflineURIImage.of(URI.create(codeForcesUserInfo.getAvatar())))
+                .add(OfflineURIImage.of(URI.create(codeForcesUserInfoDTO.getAvatar())))
                 .add(Text.of(String.format(
                         """
                         
@@ -35,24 +35,24 @@ public class CodeForcesUserInfoTemplate {
                         - maxRating: %d
                         %s, last logged in %s.
                         """,
-                        codeForcesUserInfo.getHandle(),
-                        codeForcesUserInfo.getHandle(),
-                        codeForcesUserInfo.getContribution(),
-                        codeForcesUserInfo.getFriendOfCount(),
-                        codeForcesUserInfo.getRank(),
-                        codeForcesUserInfo.getRating(),
-                        codeForcesUserInfo.getMaxRating(),
-                        codeForcesUserInfo.getHandle(), timeConverter.secondsToDateString(codeForcesUserInfo.getLastOnlineTimeSeconds())
+                        codeForcesUserInfoDTO.getHandle(),
+                        codeForcesUserInfoDTO.getHandle(),
+                        codeForcesUserInfoDTO.getContribution(),
+                        codeForcesUserInfoDTO.getFriendOfCount(),
+                        codeForcesUserInfoDTO.getRank(),
+                        codeForcesUserInfoDTO.getRating(),
+                        codeForcesUserInfoDTO.getMaxRating(),
+                        codeForcesUserInfoDTO.getHandle(), timeConverter.secondsToDateString(codeForcesUserInfoDTO.getLastOnlineTimeSeconds())
                )))
                .build();
     }
 
-    public List<Messages> toMessages(List<CodeForcesUserInfo> codeForcesUserInfoList) {
-        return codeForcesUserInfoList
+    public List<Messages> toMessages(List<CodeForcesUserInfoDTO> codeForcesUserInfoDTOList) {
+        return codeForcesUserInfoDTOList
                 .stream()
-                .map(codeForcesUserInfo -> {
+                .map(codeForcesUserInfoDTO -> {
                     try {
-                        return this.toMessages(codeForcesUserInfo);
+                        return this.toMessages(codeForcesUserInfoDTO);
                     } catch (JsonProcessingException exception) {
                         throw new RuntimeException(exception);
                     }

@@ -1,6 +1,6 @@
 package com.astolfo.robotservice.infrastructure.persistence.template;
 
-import com.astolfo.robotservice.infrastructure.persistence.model.dto.CodeForcesRatingHistory;
+import com.astolfo.robotservice.infrastructure.persistence.model.dto.CodeForcesRatingHistoryDTO;
 import com.astolfo.robotservice.infrastructure.common.utils.MessagesUtil;
 import com.astolfo.robotservice.infrastructure.common.utils.TimeConverter;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -27,7 +27,7 @@ public class CodeForcesRatingHistoryTemplate {
         ));
     }
 
-    public Messages bodyToMessages(CodeForcesRatingHistory codeForcesRatingHistory) throws JsonProcessingException {
+    public Messages bodyToMessages(CodeForcesRatingHistoryDTO codeForcesRatingHistoryDTO) throws JsonProcessingException {
         return StringTemplate.toMessages(String.format(
                 """
                 
@@ -39,24 +39,24 @@ public class CodeForcesRatingHistoryTemplate {
                 - oldRating: %d
                 - newRating: %d
                 """,
-                codeForcesRatingHistory.getContestId(),
-                codeForcesRatingHistory.getContestName(),
-                codeForcesRatingHistory.getHandle(),
-                codeForcesRatingHistory.getRank(),
-                timeConverter.secondsToDateString(codeForcesRatingHistory.getRatingUpdateTimeSeconds()),
-                codeForcesRatingHistory.getOldRating(),
-                codeForcesRatingHistory.getNewRating()
+                codeForcesRatingHistoryDTO.getContestId(),
+                codeForcesRatingHistoryDTO.getContestName(),
+                codeForcesRatingHistoryDTO.getHandle(),
+                codeForcesRatingHistoryDTO.getRank(),
+                timeConverter.secondsToDateString(codeForcesRatingHistoryDTO.getRatingUpdateTimeSeconds()),
+                codeForcesRatingHistoryDTO.getOldRating(),
+                codeForcesRatingHistoryDTO.getNewRating()
         ));
     }
 
-    public Messages contextToMessages(List<CodeForcesRatingHistory> codeForcesRatingHistoryList, int skipCount) {
+    public Messages contextToMessages(List<CodeForcesRatingHistoryDTO> codeForcesRatingHistoryDTOList, int skipCount) {
             return MessagesUtil.merge(
-                    codeForcesRatingHistoryList
+                    codeForcesRatingHistoryDTOList
                             .stream()
                             .skip(skipCount)
-                            .map(codeForcesRatingHistory -> {
+                            .map(codeForcesRatingHistoryDTO -> {
                                 try {
-                                    return this.bodyToMessages(codeForcesRatingHistory);
+                                    return this.bodyToMessages(codeForcesRatingHistoryDTO);
                                 } catch (JsonProcessingException exception) {
                                     throw new RuntimeException(exception);
                                 }
@@ -66,11 +66,11 @@ public class CodeForcesRatingHistoryTemplate {
     }
 
     public Messages toMessages(
-            List<CodeForcesRatingHistory> codeForcesRatingHistoryList,
+            List<CodeForcesRatingHistoryDTO> codeForcesRatingHistoryDTOList,
             String handle,
             int skipCount
     ) {
-        return MessagesUtil.merge(titleToMessages(handle, codeForcesRatingHistoryList.size()), contextToMessages(codeForcesRatingHistoryList, skipCount));
+        return MessagesUtil.merge(titleToMessages(handle, codeForcesRatingHistoryDTOList.size()), contextToMessages(codeForcesRatingHistoryDTOList, skipCount));
     }
 
 }

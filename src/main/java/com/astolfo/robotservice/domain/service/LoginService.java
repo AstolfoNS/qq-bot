@@ -1,9 +1,9 @@
 package com.astolfo.robotservice.domain.service;
 
-import com.astolfo.robotservice.infrastructure.persistence.model.dto.LoginRequest;
-import com.astolfo.robotservice.infrastructure.persistence.model.vo.LoginToken;
+import com.astolfo.robotservice.infrastructure.persistence.model.dto.LoginRequestDTO;
+import com.astolfo.robotservice.infrastructure.persistence.model.vo.LoginTokenVO;
 
 public interface LoginService {
 
-    LoginToken login(LoginRequest loginRequest);
+    LoginTokenVO login(LoginRequestDTO loginRequestDTO);
 }

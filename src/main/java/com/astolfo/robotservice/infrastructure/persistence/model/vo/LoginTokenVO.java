@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class LoginToken {
+public class LoginTokenVO {
 
     private UserEntity userEntity;
 

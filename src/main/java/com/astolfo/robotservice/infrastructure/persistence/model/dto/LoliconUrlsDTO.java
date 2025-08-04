@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class LoliconUrls {
+public class LoliconUrlsDTO {
 
     private String original;
 

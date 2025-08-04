@@ -1,7 +1,7 @@
 package com.astolfo.robotservice.infrastructure.persistence.impl.service;
 
 import com.astolfo.robotservice.infrastructure.common.details.LoginUser;
-import com.astolfo.robotservice.infrastructure.persistence.model.dto.LoginRequest;
+import com.astolfo.robotservice.infrastructure.persistence.model.dto.LoginRequestDTO;
 import com.astolfo.robotservice.domain.service.AuthenticationService;
 import jakarta.annotation.Resource;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,18 +23,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public Authentication getLoginRequestAuthenticationToken(LoginRequest loginRequest) {
-        return new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword());
+    public Authentication getLoginRequestAuthenticationToken(LoginRequestDTO loginRequestDTO) {
+        return new UsernamePasswordAuthenticationToken(loginRequestDTO.getUsername(), loginRequestDTO.getPassword());
     }
 
     @Override
-    public Authentication getAuthenticationByLoginRequest(LoginRequest loginRequest) {
-        return authenticationManager.authenticate(this.getLoginRequestAuthenticationToken(loginRequest));
+    public Authentication getAuthenticationByLoginRequest(LoginRequestDTO loginRequestDTO) {
+        return authenticationManager.authenticate(this.getLoginRequestAuthenticationToken(loginRequestDTO));
     }
 
     @Override
-    public LoginUser getLoginUserByLoginRequest(LoginRequest loginRequest) {
-        return (LoginUser) this.getAuthenticationByLoginRequest(loginRequest).getPrincipal();
+    public LoginUser getLoginUserByLoginRequest(LoginRequestDTO loginRequestDTO) {
+        return (LoginUser) this.getAuthenticationByLoginRequest(loginRequestDTO).getPrincipal();
     }
 
 }

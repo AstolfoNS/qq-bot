@@ -1,17 +1,17 @@
 package com.astolfo.robotservice.domain.service;
 
 import com.astolfo.robotservice.infrastructure.common.details.LoginUser;
-import com.astolfo.robotservice.infrastructure.persistence.model.dto.LoginRequest;
+import com.astolfo.robotservice.infrastructure.persistence.model.dto.LoginRequestDTO;
 import org.springframework.security.core.Authentication;
 
 public interface AuthenticationService {
 
     void setAuthentication(LoginUser loginUser);
 
-    Authentication getLoginRequestAuthenticationToken(LoginRequest loginRequest);
+    Authentication getLoginRequestAuthenticationToken(LoginRequestDTO loginRequestDTO);
 
-    Authentication getAuthenticationByLoginRequest(LoginRequest loginRequest);
+    Authentication getAuthenticationByLoginRequest(LoginRequestDTO loginRequestDTO);
 
-    LoginUser getLoginUserByLoginRequest(LoginRequest loginRequest);
+    LoginUser getLoginUserByLoginRequest(LoginRequestDTO loginRequestDTO);
 
 }

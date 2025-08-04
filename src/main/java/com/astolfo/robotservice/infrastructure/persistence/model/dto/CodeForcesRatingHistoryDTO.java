@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class CodeForcesRatingHistory {
+public class CodeForcesRatingHistoryDTO {
 
     private int contestId;
 

@@ -21,9 +21,6 @@ import java.util.concurrent.CompletableFuture;
 public class BasicListener {
 
     @Resource
-    private ByteArrayResource byteArrayResource;
-
-    @Resource
     private ObjectMapper objectMapper;
 
     @Filter("^/chat\\s+[\\s\\S]*")

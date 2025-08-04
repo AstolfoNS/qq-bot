@@ -9,7 +9,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class LoliconPictureInfo {
+public class LoliconPictureInfoDTO {
 
     private long pid;
 
@@ -35,5 +35,5 @@ public class LoliconPictureInfo {
 
     private long uploadDate;
 
-    private LoliconUrls loliconUrls;
+    private LoliconUrlsDTO urls;
 }

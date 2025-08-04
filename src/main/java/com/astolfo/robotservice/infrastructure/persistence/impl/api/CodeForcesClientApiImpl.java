@@ -2,10 +2,10 @@ package com.astolfo.robotservice.infrastructure.persistence.impl.api;
 
 import com.astolfo.robotservice.domain.api.CodeForcesClientApi;
 import com.astolfo.robotservice.infrastructure.common.constants.CodeForcesConstant;
-import com.astolfo.robotservice.infrastructure.persistence.model.dto.CodeForcesResponse;
-import com.astolfo.robotservice.infrastructure.persistence.model.dto.CodeForcesUserInfo;
-import com.astolfo.robotservice.infrastructure.persistence.model.dto.CodeForcesRatingHistory;
-import com.astolfo.robotservice.infrastructure.persistence.model.dto.CodeForcesValidationResult;
+import com.astolfo.robotservice.infrastructure.persistence.model.dto.CodeForcesResponseDTO;
+import com.astolfo.robotservice.infrastructure.persistence.model.dto.CodeForcesUserInfoDTO;
+import com.astolfo.robotservice.infrastructure.persistence.model.dto.CodeForcesRatingHistoryDTO;
+import com.astolfo.robotservice.infrastructure.persistence.model.dto.CodeForcesValidationResultDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
@@ -29,18 +29,18 @@ public class CodeForcesClientApiImpl implements CodeForcesClientApi {
 
 
     @Override
-    public Mono<CodeForcesValidationResult<CodeForcesUserInfo>> getValidUserInfoIteratively(List<String> initialHandles, boolean checkHistoricHandles) {
+    public Mono<CodeForcesValidationResultDTO<CodeForcesUserInfoDTO>> getValidUserInfoIteratively(List<String> initialHandles, boolean checkHistoricHandles) {
         if (CollectionUtils.isEmpty(initialHandles)) {
-            return Mono.just(CodeForcesValidationResult.empty());
+            return Mono.just(CodeForcesValidationResultDTO.empty());
         }
 
         return validateHandlesRecursively(new ArrayList<>(initialHandles), checkHistoricHandles, new ArrayList<>());
     }
 
     @Override
-    public Mono<CodeForcesResponse<CodeForcesRatingHistory>> getUserRatingHistory(String handle) {
+    public Mono<CodeForcesResponseDTO<CodeForcesRatingHistoryDTO>> getUserRatingHistory(String handle) {
         if (!StringUtils.hasText(handle)) {
-            return Mono.just(CodeForcesResponse.errorResponse());
+            return Mono.just(CodeForcesResponseDTO.errorResponse());
         }
 
         return webClient
@@ -55,22 +55,22 @@ public class CodeForcesClientApiImpl implements CodeForcesClientApi {
                         return response.bodyToMono(new ParameterizedTypeReference<>() {});
                     }
 
-                    return Mono.just(CodeForcesResponse.errorResponse());
+                    return Mono.just(CodeForcesResponseDTO.errorResponse());
                 });
     }
 
-    private Mono<CodeForcesValidationResult<CodeForcesUserInfo>> validateHandlesRecursively(
+    private Mono<CodeForcesValidationResultDTO<CodeForcesUserInfoDTO>> validateHandlesRecursively(
             List<String> handles,
             boolean checkHistoricHandles,
             List<String> invalidHandles
     ) {
         if (handles.isEmpty()) {
-            return Mono.just(CodeForcesValidationResult.error(invalidHandles));
+            return Mono.just(CodeForcesValidationResultDTO.error(invalidHandles));
         }
 
         return fetchUserInfo(handles, checkHistoricHandles).flatMap(response -> {
             if (CodeForcesConstant.OK.equals(response.getStatus())) {
-                return Mono.just(CodeForcesValidationResult.success(response, invalidHandles));
+                return Mono.just(CodeForcesValidationResultDTO.success(response, invalidHandles));
             }
 
             return handleInvalidResponse(response, handles, checkHistoricHandles, invalidHandles);
@@ -78,9 +78,9 @@ public class CodeForcesClientApiImpl implements CodeForcesClientApi {
 
     }
 
-    private Mono<CodeForcesResponse<CodeForcesUserInfo>> fetchUserInfo(List<String> handles, boolean checkHistoricHandles) {
+    private Mono<CodeForcesResponseDTO<CodeForcesUserInfoDTO>> fetchUserInfo(List<String> handles, boolean checkHistoricHandles) {
         if (CollectionUtils.isEmpty(handles)) {
-            return Mono.just(CodeForcesResponse.emptyResponse());
+            return Mono.just(CodeForcesResponseDTO.emptyResponse());
         }
 
         return webClient
@@ -97,7 +97,7 @@ public class CodeForcesClientApiImpl implements CodeForcesClientApi {
                     }
                     if (response.statusCode().value() >= 400 && response.statusCode().value() <= 500) {
                         return response
-                                .bodyToMono(new ParameterizedTypeReference<CodeForcesResponse<CodeForcesUserInfo>>() {})
+                                .bodyToMono(new ParameterizedTypeReference<CodeForcesResponseDTO<CodeForcesUserInfoDTO>>() {})
                                 .flatMap(Mono::just)
                                 .switchIfEmpty(Mono.error(new RuntimeException("Received 400 error with empty body from Codeforces API. Status: " + response.statusCode())));
                     }
@@ -106,8 +106,8 @@ public class CodeForcesClientApiImpl implements CodeForcesClientApi {
                 });
     }
 
-    private Mono<CodeForcesValidationResult<CodeForcesUserInfo>> handleInvalidResponse(
-            CodeForcesResponse<CodeForcesUserInfo> response,
+    private Mono<CodeForcesValidationResultDTO<CodeForcesUserInfoDTO>> handleInvalidResponse(
+            CodeForcesResponseDTO<CodeForcesUserInfoDTO> response,
             List<String> handles,
             boolean checkHistoricHandles,
             List<String> invalidHandles
@@ -120,7 +120,7 @@ public class CodeForcesClientApiImpl implements CodeForcesClientApi {
 
                     return validateHandlesRecursively(handles, checkHistoricHandles, invalidHandles);
                 })
-                .orElse(Mono.just(CodeForcesValidationResult.error(invalidHandles)));
+                .orElse(Mono.just(CodeForcesValidationResultDTO.error(invalidHandles)));
     }
 
     private Optional<String> extractInvalidHandle(String comment) {

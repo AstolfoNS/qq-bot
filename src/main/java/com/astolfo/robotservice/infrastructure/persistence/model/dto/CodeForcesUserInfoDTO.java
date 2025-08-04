@@ -3,7 +3,7 @@ package com.astolfo.robotservice.infrastructure.persistence.model.dto;
 import lombok.Data;
 
 @Data
-public class CodeForcesUserInfo {
+public class CodeForcesUserInfoDTO {
 
     private String handle;
 

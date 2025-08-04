@@ -11,7 +11,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class CodeForcesResponse<T> {
+public class CodeForcesResponseDTO<T> {
 
     private String status;
 
@@ -25,8 +25,8 @@ public class CodeForcesResponse<T> {
     }
 
 
-    public static <T> CodeForcesResponse<T> emptyResponse() {
-        CodeForcesResponse<T> emptyResponse = new CodeForcesResponse<>();
+    public static <T> CodeForcesResponseDTO<T> emptyResponse() {
+        CodeForcesResponseDTO<T> emptyResponse = new CodeForcesResponseDTO<>();
 
         emptyResponse.setStatus("OK");
         emptyResponse.setResult(new ArrayList<>());
@@ -35,12 +35,12 @@ public class CodeForcesResponse<T> {
 
     }
 
-    public static <T> CodeForcesResponse<T> errorResponse() {
+    public static <T> CodeForcesResponseDTO<T> errorResponse() {
         return errorResponse("null");
     }
 
-    public static <T> CodeForcesResponse<T> errorResponse(String comment) {
-        CodeForcesResponse<T> response = new CodeForcesResponse<>();
+    public static <T> CodeForcesResponseDTO<T> errorResponse(String comment) {
+        CodeForcesResponseDTO<T> response = new CodeForcesResponseDTO<>();
 
         response.setStatus("FAILED");
         response.setResult(new ArrayList<>());

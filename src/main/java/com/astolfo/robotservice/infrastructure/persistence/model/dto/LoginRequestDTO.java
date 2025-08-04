@@ -10,7 +10,7 @@ import java.util.Optional;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class LoginRequest {
+public class LoginRequestDTO {
 
     String username;
 
