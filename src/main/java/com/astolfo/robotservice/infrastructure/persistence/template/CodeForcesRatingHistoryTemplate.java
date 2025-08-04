@@ -1,8 +1,8 @@
 package com.astolfo.robotservice.infrastructure.persistence.template;
 
 import com.astolfo.robotservice.infrastructure.persistence.model.dto.CodeForcesRatingHistoryDTO;
-import com.astolfo.robotservice.infrastructure.common.utils.MessagesUtil;
-import com.astolfo.robotservice.infrastructure.common.utils.TimeConverter;
+import com.astolfo.robotservice.infrastructure.common.utils.EventUtil;
+import com.astolfo.robotservice.infrastructure.common.utils.TimeConverterUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.annotation.Resource;
 import love.forte.simbot.message.Messages;
@@ -14,7 +14,7 @@ import java.util.List;
 public class CodeForcesRatingHistoryTemplate {
 
     @Resource
-    private TimeConverter timeConverter;
+    private TimeConverterUtil timeConverterUtil;
 
 
     public Messages titleToMessages(String handle, int total) {
@@ -43,14 +43,14 @@ public class CodeForcesRatingHistoryTemplate {
                 codeForcesRatingHistoryDTO.getContestName(),
                 codeForcesRatingHistoryDTO.getHandle(),
                 codeForcesRatingHistoryDTO.getRank(),
-                timeConverter.secondsToDateString(codeForcesRatingHistoryDTO.getRatingUpdateTimeSeconds()),
+                timeConverterUtil.secondsToDateString(codeForcesRatingHistoryDTO.getRatingUpdateTimeSeconds()),
                 codeForcesRatingHistoryDTO.getOldRating(),
                 codeForcesRatingHistoryDTO.getNewRating()
         ));
     }
 
     public Messages contextToMessages(List<CodeForcesRatingHistoryDTO> codeForcesRatingHistoryDTOList, int skipCount) {
-            return MessagesUtil.merge(
+            return EventUtil.merge(
                     codeForcesRatingHistoryDTOList
                             .stream()
                             .skip(skipCount)
@@ -70,7 +70,7 @@ public class CodeForcesRatingHistoryTemplate {
             String handle,
             int skipCount
     ) {
-        return MessagesUtil.merge(titleToMessages(handle, codeForcesRatingHistoryDTOList.size()), contextToMessages(codeForcesRatingHistoryDTOList, skipCount));
+        return EventUtil.merge(titleToMessages(handle, codeForcesRatingHistoryDTOList.size()), contextToMessages(codeForcesRatingHistoryDTOList, skipCount));
     }
 
 }

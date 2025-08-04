@@ -1,5 +1,6 @@
 package com.astolfo.robotservice.domain.listener;
 
+import com.astolfo.robotservice.infrastructure.common.annotations.Action;
 import com.astolfo.robotservice.infrastructure.common.utils.CommonUtil;
 import com.astolfo.robotservice.infrastructure.common.enums.R18Enum;
 import com.astolfo.robotservice.domain.service.LoliconService;
@@ -22,7 +23,8 @@ public class LoliconListener {
     @Resource
     private LoliconService loliconService;
 
-    
+
+    @Action("Lolicon.getPicture()")
     @Filter("^/setu(?:\\s+{{r18,(?:--rand|--true|--false)}})?(?:\\s+{{num,(?:\\d+)}})?(?:\\s+{{keyword,(.+)}})?")
     @Listener
     public CompletableFuture<?> getPicture(

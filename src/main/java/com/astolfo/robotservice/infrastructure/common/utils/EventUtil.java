@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class MessagesUtil {
+public class EventUtil {
 
     public static Messages merge(Messages... messages) {
         return Messages.of(
@@ -27,11 +27,11 @@ public class MessagesUtil {
     }
 
     public static List<Message.Element> analysisToElementList(MessageEvent event) {
-        return new ArrayList<>(MessagesUtil.analysisToMessages(event).toList());
+        return new ArrayList<>(EventUtil.analysisToMessages(event).toList());
     }
 
    public static List<Message.Element> removePrefix(MessageEvent event, String prefix) {
-       List<Message.Element> elementList = MessagesUtil.analysisToElementList(event);
+       List<Message.Element> elementList = EventUtil.analysisToElementList(event);
 
        elementList.set(0, Text.of(TextElementUtil.getText(elementList.getFirst()).substring(prefix.length())));
 
@@ -72,4 +72,13 @@ public class MessagesUtil {
 
         return options;
     }
+
+    public static String getQqId(MessageEvent event) {
+        return event.getId().toString().split("-")[0];
+    }
+
+    public static String getQqUserId(MessageEvent event) {
+        return event.getAuthorId().toString();
+    }
+
 }

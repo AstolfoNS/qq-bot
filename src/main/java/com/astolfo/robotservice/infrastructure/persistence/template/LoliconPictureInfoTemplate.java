@@ -1,7 +1,7 @@
 package com.astolfo.robotservice.infrastructure.persistence.template;
 
-import com.astolfo.robotservice.infrastructure.common.utils.MessagesUtil;
-import com.astolfo.robotservice.infrastructure.common.utils.TimeConverter;
+import com.astolfo.robotservice.infrastructure.common.utils.EventUtil;
+import com.astolfo.robotservice.infrastructure.common.utils.TimeConverterUtil;
 import com.astolfo.robotservice.infrastructure.persistence.model.dto.LoliconPictureInfoDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.annotation.Resource;
@@ -15,7 +15,7 @@ import java.util.List;
 public class LoliconPictureInfoTemplate {
 
     @Resource
-    private TimeConverter timeConverter;
+    private TimeConverterUtil timeConverterUtil;
 
 
     public Messages bodytoMessages(LoliconPictureInfoDTO loliconPictureInfoDTO) throws JsonProcessingException {
@@ -38,13 +38,13 @@ public class LoliconPictureInfoTemplate {
                         loliconPictureInfoDTO.getTitle(),
                         loliconPictureInfoDTO.getAuthor(),
                         String.join(",\n    ", loliconPictureInfoDTO.getTags()),
-                        timeConverter.millisToDateString(loliconPictureInfoDTO.getUploadDate())
+                        timeConverterUtil.millisToDateString(loliconPictureInfoDTO.getUploadDate())
                 )))
                 .build();
     }
 
     public Messages toMessages(List<LoliconPictureInfoDTO> loliconPictureInfoDTOList) throws JsonProcessingException {
-         return MessagesUtil.merge(
+         return EventUtil.merge(
                  loliconPictureInfoDTOList
                          .stream()
                          .map(loliconPictureInfoDTO -> {

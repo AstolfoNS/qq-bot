@@ -13,14 +13,14 @@ import java.util.Objects;
 
 @Slf4j
 @Component
-public class TimeConverter {
+public class TimeConverterUtil {
 
     private final ObjectMapper objectMapper;
 
     private final String timeZone;
 
 
-    public TimeConverter(ObjectMapper objectMapper, @Value("${spring.jackson.time-zone}") String timeZone) {
+    public TimeConverterUtil(ObjectMapper objectMapper, @Value("${spring.jackson.time-zone}") String timeZone) {
         this.objectMapper = objectMapper;
         this.timeZone = timeZone;
     }

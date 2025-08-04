@@ -125,7 +125,7 @@ public class RedisCacheUtil {
     }
 
     public <T> Map<String, T> getHashAll(String key, Class<T> clazz) {
-        return MapConverter.convertMap(redisTemplate.opsForHash().entries(key), String.class, clazz);
+        return MapConverterUtil.convertMap(redisTemplate.opsForHash().entries(key), String.class, clazz);
     }
 
     public RLock tryLock(

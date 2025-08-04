@@ -1,5 +1,6 @@
 package com.astolfo.robotservice.domain.listener;
 
+import com.astolfo.robotservice.infrastructure.common.annotations.Action;
 import com.astolfo.robotservice.infrastructure.common.utils.CommonUtil;
 import com.astolfo.robotservice.infrastructure.common.constants.CodeForcesConstant;
 import com.astolfo.robotservice.domain.service.CodeForcesService;
@@ -25,10 +26,10 @@ public class CodeForcesListener {
     @Resource
     private CodeForcesService codeForcesService;
 
-
+    @Action("CodeForces.getUserInfo()")
     @Filter("^/cf\\s+user{{checkHistoricHandles,(?:\\s+(?:--true|--false))?}}{{handles,(?:\\s+\\S+)+}}$")
     @Listener
-    public CompletableFuture<?> getCodeForcesUserInfo(
+    public CompletableFuture<?> getUserInfo(
             MessageEvent event,
             @FilterValue(value = "checkHistoricHandles", required = false) String checkHistoricHandles,
             @FilterValue("handles") String handles
@@ -51,9 +52,10 @@ public class CodeForcesListener {
                 .toFuture();
     }
 
+    @Action("CodeForces.getRatingHistory()")
     @Filter("^/cf\\s+rating\\s+{{handle,(\\S+)}}(?:\\s+{{numberString,(\\d+)}})?")
     @Listener
-    public CompletableFuture<?> getCodeForcesUserRatingHistory(
+    public CompletableFuture<?> getRatingHistory(
             MessageEvent event,
             @FilterValue("handle") String handle,
             @FilterValue(value = "numberString", required = false) String numberString
