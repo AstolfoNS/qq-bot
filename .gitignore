@@ -37,3 +37,6 @@ build/
 
 ### robot ###
 **/src/main/resources/simbot-bots/*.bot.json
+
+### logs ###
+**/logs/

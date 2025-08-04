@@ -3,7 +3,7 @@
 
 <mapper namespace="com.astolfo.robotservice.server.mapper.UserMapper">
 
-    <resultMap id="permissionResultMap" type="com.astolfo.robotservice.server.model.entity.PermissionEntity">
+    <resultMap id="permissionResultMap" type="com.astolfo.robotservice.infrastructure.persistence.model.entity.PermissionEntity">
         <id column="p_id" property="id"/>
         <result column="p_symbol" property="symbol"/>
         <result column="p_description" property="description"/>
