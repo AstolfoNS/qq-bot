@@ -1,5 +1,6 @@
 package com.astolfo.robotservice;
 
+import com.astolfo.robotservice.domain.service.MailService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,18 +12,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class MainTest {
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    private MailService mailService;
 
 
     @Test
     public void test() {
-        String ans = passwordEncoder.encode("LuoXiaoBin");
 
-        log.info("ans: {}", ans);
-
-        boolean isRight = passwordEncoder.matches("LuoXiaoBin", ans);
-
-        log.info("isRight :{}", isRight);
+        mailService.sendLogFileToEmail("1780884916@qq.com");
 
     }
 

@@ -1,7 +1,11 @@
 package com.astolfo.robotservice.domain.listener;
 
+import com.astolfo.robotservice.domain.service.MailService;
+import com.astolfo.robotservice.domain.service.UserService;
 import com.astolfo.robotservice.infrastructure.common.utils.CommonUtil;
 import com.astolfo.robotservice.infrastructure.common.utils.MessagesUtil;
+import com.astolfo.robotservice.infrastructure.persistence.model.entity.UserEntity;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -11,9 +15,11 @@ import love.forte.simbot.quantcat.common.annotations.Filter;
 import love.forte.simbot.quantcat.common.annotations.FilterValue;
 import love.forte.simbot.quantcat.common.annotations.Listener;
 import love.forte.simbot.resource.ByteArrayResource;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
@@ -21,7 +27,11 @@ import java.util.concurrent.CompletableFuture;
 public class BasicListener {
 
     @Resource
-    private ObjectMapper objectMapper;
+    private MailService mailService;
+
+    @Resource
+    private UserService userService;
+
 
     @Filter("^/chat\\s+[\\s\\S]*")
     @Listener
@@ -43,7 +53,7 @@ public class BasicListener {
         List<List<Message.Element>> options = MessagesUtil.groupByWhitespace(tokens);
 
         if (options.isEmpty()) {
-            return event.replyAsync(Messages.of(Text.of("error: 无效的选项")));
+            return event.replyAsync(Messages.of(Text.of("error: 无效的选项。")));
         }
 
         return event.replyAsync(Messages.of(options.get((int) CommonUtil.randomFromZero(options.size() - 1))));
@@ -65,13 +75,27 @@ public class BasicListener {
 
             return event.replyAsync(String.valueOf(CommonUtil.random(min, max)));
         } catch (NumberFormatException exception) {
-            return event.replyAsync("error: 输入数字过大无法计算");
+            return event.replyAsync("error: 输入数字过大无法计算。");
         }
     }
 
     @Filter("^/logs")
     @Listener
     public CompletableFuture<?> logs(MessageEvent event) {
-        return null;
+        String qqNumber = event.getAuthorId().toString();
+
+        UserEntity userEntity = userService.getOne(Wrappers.<UserEntity>lambdaQuery().eq(UserEntity::getUsername, qqNumber));
+
+        if (Objects.isNull(userEntity)) {
+            return event.replyAsync("没有查询到账户信息，请使用qq号注册bot再尝试。");
+        }
+
+        try {
+            mailService.sendLogFileToEmail(userEntity.getQqEmail());
+
+            return event.replyAsync("日志已成功发送至邮箱！");
+        } catch (Exception exception) {
+            return event.replyAsync("日志发送失败，请检查网络是否有问题。");
+        }
     }
 }
