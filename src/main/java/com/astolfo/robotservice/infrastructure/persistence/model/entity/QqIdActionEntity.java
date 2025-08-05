@@ -21,7 +21,9 @@ public class QqIdActionEntity {
 
     private String qqId;
 
-    private String action;
+    private String actionName;
+
+    private Boolean isCommon;
 
     private LocalDateTime createTime;
 

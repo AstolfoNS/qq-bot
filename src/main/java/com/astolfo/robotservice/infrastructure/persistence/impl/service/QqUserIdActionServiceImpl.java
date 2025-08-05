@@ -21,7 +21,10 @@ public class QqUserIdActionServiceImpl extends ServiceImpl<QqUserIdActionMapper,
                 Wrappers
                         .<QqUserIdActionEntity>lambdaQuery()
                         .eq(QqUserIdActionEntity::getQqUserId, qqUserId)
-                        .eq(QqUserIdActionEntity::getAction, actionName)
+                        .eq(QqUserIdActionEntity::getActionName, actionName)
+                        .or()
+                        .eq(QqUserIdActionEntity::getIsCommon, true)
+                        .eq(QqUserIdActionEntity::getActionName, actionName)
         );
     }
 
@@ -31,7 +34,7 @@ public class QqUserIdActionServiceImpl extends ServiceImpl<QqUserIdActionMapper,
                 QqUserIdActionEntity
                         .builder()
                         .qqUserId(qqUserId)
-                        .action(actionName)
+                        .actionName(actionName)
                         .build()
         );
     }
@@ -42,7 +45,7 @@ public class QqUserIdActionServiceImpl extends ServiceImpl<QqUserIdActionMapper,
                 Wrappers
                         .<QqUserIdActionEntity>lambdaQuery()
                         .eq(QqUserIdActionEntity::getQqUserId, qqUserId)
-                        .eq(QqUserIdActionEntity::getAction, actionName)
+                        .eq(QqUserIdActionEntity::getActionName, actionName)
         );
     }
 

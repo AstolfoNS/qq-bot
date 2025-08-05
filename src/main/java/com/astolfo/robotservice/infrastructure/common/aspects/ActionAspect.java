@@ -24,8 +24,8 @@ public class ActionAspect {
     private QqUserIdActionService qqUserIdActionService;
 
 
-    private boolean hasPermission(MessageEvent event, String action) {
-        return qqIdActionService.hasPermission(EventUtil.getQqId(event), action) || qqUserIdActionService.hasPermission(EventUtil.getQqUserId(event), action);
+    private boolean hasPermission(MessageEvent event, String actionName) {
+        return qqIdActionService.hasPermission(EventUtil.getQqId(event), actionName) || qqUserIdActionService.hasPermission(EventUtil.getQqUserId(event), actionName);
     }
 
     @Around("@annotation(action) && args(event, ..)")
