@@ -21,6 +21,7 @@ import love.forte.simbot.quantcat.common.annotations.Listener;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
@@ -38,11 +39,11 @@ public class AuthorizeListener {
     private QqUserIdActionService qqUserIdActionService;
 
 
-    public Messages getPersonAuthListMessages(String qqUserId) {
+    public Messages getAuthListMessagesByQqUserId(String qqUserId) {
         return createAuthListMessages(qqUserId, qqUserIdActionService.fetchListByQqUserId(qqUserId), QqUserIdActionEntity::getActionName);
     }
 
-    public Messages getGroupAuthListMessages(String qqId) {
+    public Messages getAuthListMessagesByQqId(String qqId) {
         return createAuthListMessages(qqId, qqIdActionService.fetchListByQqId(qqId), QqIdActionEntity::getActionName);
     }
 
@@ -66,30 +67,38 @@ public class AuthorizeListener {
 
 
     @Action("Auth.list()")
-    @Filter("^/auth\\s+{{object,(--person|--group)}}\\s+{{number,(\\d+)}}")
+    @Filter("^/auth\\s+{{object,(--person|--group)}}(?:\\s+{{number,(?:\\d+)}})?")
     @Listener
     public CompletableFuture<?> fetchList(
             MessageEvent event,
             @FilterValue("object") String object,
-            @FilterValue("number") String number
+            @FilterValue(value = "number", required = false) String number
     ) {
         if ("--person".equals(object)) {
-            return event.replyAsync(this.getPersonAuthListMessages(number));
+            if (Objects.isNull(number)) {
+                number = EventUtil.getQqUserId(event);
+            }
+
+            return event.replyAsync(this.getAuthListMessagesByQqUserId(number));
         }
         if ("--group".equals(object)) {
-            return event.replyAsync(this.getGroupAuthListMessages(number));
+            if (Objects.isNull(number)) {
+                number = EventUtil.getQqId(event);
+            }
+
+            return event.replyAsync(this.getAuthListMessagesByQqId(number));
         }
 
         return event.replyAsync("未知错误！");
     }
 
     @Action("Auth.auth()")
-    @Filter("^/auth\\s+{{object,(--person|--group)}}\\s+{{number,(\\d+)}}\\s+{{operation,(add|del)}}\\s+{{actionName,(.+)}}")
+    @Filter("^/auth\\s+{{object,(--person|--group)}}(?:\\s+{{number,(?:\\d+)}})?\\s+{{operation,(add|del)}}\\s+{{actionName,(.+)}}")
     @Listener
     public CompletableFuture<?> authorize(
             MessageEvent event,
             @FilterValue("object") String object,
-            @FilterValue("number") String number,
+            @FilterValue(value = "number", required = false) String number,
             @FilterValue("operation") String operation,
             @FilterValue("actionName") String actionName
     ) {
@@ -98,22 +107,30 @@ public class AuthorizeListener {
         }
 
         if ("--person".equals(object)) {
+            if (Objects.isNull(number)) {
+                number = EventUtil.getQqUserId(event);
+            }
+
             if ("del".equals(operation) && qqUserIdActionService.delPermission(number, actionName) > 0) {
                 return event.replyAsync("弃权成功！");
             }
             if (qqUserIdActionService.hasPermission(number, actionName)) {
-                return event.replyAsync(number + " qq用户已具备 " + actionName + " 行为权限");
+                return event.replyAsync(number + " qq用户已具备 " + actionName + " 行为权限。");
             }
             if ("add".equals(operation) && qqUserIdActionService.addPermission(number, actionName) > 0) {
                 return event.replyAsync("授权成功！");
             }
         }
         if ("--group".equals(object)) {
+            if (Objects.isNull(number)) {
+                number = EventUtil.getQqId(event);
+            }
+
             if ("del".equals(operation) && qqIdActionService.delPermission(number, actionName) > 0) {
                 return event.replyAsync("弃权成功！");
             }
             if (qqIdActionService.hasPermission(number, actionName)) {
-                return event.replyAsync(number + " qq群组已具备 " + actionName + " 行为权限");
+                return event.replyAsync(number + " qq群组已具备 " + actionName + " 行为权限。");
             }
             if ("add".equals(operation) && qqIdActionService.addPermission(number, actionName) > 0) {
                 return event.replyAsync("授权成功！");
