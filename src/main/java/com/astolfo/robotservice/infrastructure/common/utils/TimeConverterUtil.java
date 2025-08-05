@@ -2,8 +2,10 @@ package com.astolfo.robotservice.infrastructure.common.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.stereotype.Component; // 引入 @Component 注解
 
 import java.time.Instant;
@@ -15,15 +17,12 @@ import java.util.Objects;
 @Component
 public class TimeConverterUtil {
 
-    private final ObjectMapper objectMapper;
+    @Resource
+    private ObjectMapper objectMapper;
 
-    private final String timeZone;
+    @Value("${spring.jackson.time-zone}")
+    private String timeZone;
 
-
-    public TimeConverterUtil(ObjectMapper objectMapper, @Value("${spring.jackson.time-zone}") String timeZone) {
-        this.objectMapper = objectMapper;
-        this.timeZone = timeZone;
-    }
 
     public static LocalDateTime secondsToDate(long totalSeconds, String timeZone) {
         if (Objects.isNull(timeZone) || timeZone.trim().isEmpty()) {
@@ -61,7 +60,7 @@ public class TimeConverterUtil {
     }
 
     public String millisToDateString(long totalMilliseconds) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(millisToLocalDateTime(totalMilliseconds)).replaceAll("^\"|\"$", "");
+        return objectMapper.writeValueAsString(this.millisToLocalDateTime(totalMilliseconds)).replaceAll("^\"|\"$", "");
     }
 
 }

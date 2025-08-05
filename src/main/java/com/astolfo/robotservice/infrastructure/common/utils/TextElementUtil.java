@@ -18,7 +18,7 @@ public class TextElementUtil {
     }
 
     public static boolean hasText(Message.Element element) {
-        return  element instanceof OneBotText.Element || element instanceof Text;
+        return element instanceof OneBotText.Element || element instanceof Text;
     }
 
 }

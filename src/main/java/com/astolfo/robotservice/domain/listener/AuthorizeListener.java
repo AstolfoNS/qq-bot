@@ -4,9 +4,11 @@ import com.astolfo.robotservice.domain.service.ActionService;
 import com.astolfo.robotservice.domain.service.QqIdActionService;
 import com.astolfo.robotservice.domain.service.QqUserIdActionService;
 import com.astolfo.robotservice.infrastructure.common.annotations.Action;
+import com.astolfo.robotservice.infrastructure.common.utils.EventUtil;
 import com.astolfo.robotservice.infrastructure.persistence.model.entity.ActionEntity;
 import com.astolfo.robotservice.infrastructure.persistence.model.entity.QqIdActionEntity;
 import com.astolfo.robotservice.infrastructure.persistence.model.entity.QqUserIdActionEntity;
+import com.astolfo.robotservice.infrastructure.persistence.template.StringTemplate;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +20,9 @@ import love.forte.simbot.quantcat.common.annotations.FilterValue;
 import love.forte.simbot.quantcat.common.annotations.Listener;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 @Slf4j
 @Component
@@ -34,8 +38,35 @@ public class AuthorizeListener {
     private QqUserIdActionService qqUserIdActionService;
 
 
+    public Messages getPersonAuthListMessages(String qqUserId) {
+        return createAuthListMessages(qqUserId, qqUserIdActionService.fetchListByQqUserId(qqUserId), QqUserIdActionEntity::getActionName);
+    }
+
+    public Messages getGroupAuthListMessages(String qqId) {
+        return createAuthListMessages(qqId, qqIdActionService.fetchListByQqId(qqId), QqIdActionEntity::getActionName);
+    }
+
+    private <T> Messages createAuthListMessages(String id, List<T> entityList, Function<T, String> actionNameMapper) {
+        Messages context;
+
+        if (entityList.isEmpty()) {
+            context = StringTemplate.toMessages("auth empty!!! (>_<)");
+        } else {
+            context = Messages.of(
+                    entityList
+                            .stream()
+                            .map(actionNameMapper)
+                            .map(actionName -> Text.of("\n - " + actionName))
+                            .toList()
+            );
+        }
+
+        return EventUtil.merge(StringTemplate.toMessages(id + " auth list: "), context);
+    }
+
+
     @Action("Auth.list()")
-    @Filter("^/auth\\s+--list\\s+{{object,(--person|--group)}}\\s+{{number,(\\d+)}}")
+    @Filter("^/auth\\s+{{object,(--person|--group)}}\\s+{{number,(\\d+)}}")
     @Listener
     public CompletableFuture<?> fetchList(
             MessageEvent event,
@@ -43,36 +74,10 @@ public class AuthorizeListener {
             @FilterValue("number") String number
     ) {
         if ("--person".equals(object)) {
-            return event.replyAsync(Messages.of(
-                    qqUserIdActionService
-                            .list(
-                                    Wrappers
-                                            .<QqUserIdActionEntity>lambdaQuery()
-                                            .eq(QqUserIdActionEntity::getQqUserId, number)
-                                            .or()
-                                            .eq(QqUserIdActionEntity::getIsCommon, true)
-                                            .orderByAsc(QqUserIdActionEntity::getActionName)
-                            )
-                            .stream()
-                            .map(qqUserIdActionEntity -> Text.of(String.format("\n%s", qqUserIdActionEntity.getActionName())))
-                            .toList()
-            ));
+            return event.replyAsync(this.getPersonAuthListMessages(number));
         }
         if ("--group".equals(object)) {
-            return event.replyAsync(Messages.of(
-                    qqIdActionService
-                            .list(
-                                    Wrappers
-                                            .<QqIdActionEntity>lambdaQuery()
-                                            .eq(QqIdActionEntity::getQqId, number)
-                                            .or()
-                                            .eq(QqIdActionEntity::getIsCommon, true)
-                                            .orderByAsc(QqIdActionEntity::getActionName)
-                            )
-                            .stream()
-                            .map(qqIdActionEntity -> Text.of(String.format("\n%s", qqIdActionEntity.getActionName())))
-                            .toList()
-            ));
+            return event.replyAsync(this.getGroupAuthListMessages(number));
         }
 
         return event.replyAsync("未知错误！");
@@ -97,7 +102,7 @@ public class AuthorizeListener {
                 return event.replyAsync("弃权成功！");
             }
             if (qqUserIdActionService.hasPermission(number, actionName)) {
-                return event.replyAsync(number + " qq用户具备 " + actionName + " 行为权限");
+                return event.replyAsync(number + " qq用户已具备 " + actionName + " 行为权限");
             }
             if ("add".equals(operation) && qqUserIdActionService.addPermission(number, actionName) > 0) {
                 return event.replyAsync("授权成功！");
@@ -108,7 +113,7 @@ public class AuthorizeListener {
                 return event.replyAsync("弃权成功！");
             }
             if (qqIdActionService.hasPermission(number, actionName)) {
-                return event.replyAsync(number + " qq群已具备 " + actionName + " 行为权限");
+                return event.replyAsync(number + " qq群组已具备 " + actionName + " 行为权限");
             }
             if ("add".equals(operation) && qqIdActionService.addPermission(number, actionName) > 0) {
                 return event.replyAsync("授权成功！");

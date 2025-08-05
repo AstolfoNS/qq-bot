@@ -52,7 +52,7 @@ public class JwtUtil {
             Instant issuedAt,
             Long expiresInMillis
     ) {
-        return generateToken(buildChaim(loginUser, issuedAt, expiresInMillis));
+        return this.generateToken(buildChaim(loginUser, issuedAt, expiresInMillis));
     }
 
     public String generateToken(@NotNull JwtClaimsSet claim) {
@@ -61,11 +61,11 @@ public class JwtUtil {
 
 
     public String generateToken(LoginUser loginUserDetails, Long expireInMillis) {
-        return generateToken(loginUserDetails, Instant.now(), expireInMillis);
+        return this.generateToken(loginUserDetails, Instant.now(), expireInMillis);
     }
 
     public String generateToken(LoginUser loginUserDetails) {
-        return generateToken(loginUserDetails, expire);
+        return this.generateToken(loginUserDetails, expire);
     }
 
     public ParseToken parseToken(String token) throws JwtException {

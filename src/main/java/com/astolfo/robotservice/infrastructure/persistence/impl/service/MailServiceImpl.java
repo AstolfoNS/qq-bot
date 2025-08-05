@@ -28,10 +28,14 @@ public class MailServiceImpl implements MailService {
 
     @Override
     public void sendLogFileToEmail(String toEmail) {
-        File logFile = new File(System.getProperty("user.dir") + LogConstant.logRelativePath);
+        File infoFile = new File(System.getProperty("user.dir") + LogConstant.INFO_RELATIVE_PATH);
+        File errorFile = new File(System.getProperty("user.dir") + LogConstant.ERROR_RELATIVE_PATH);
 
-        if (!logFile.exists()) {
-            throw new RuntimeException("日志文件不存在");
+        if (!infoFile.exists()) {
+            throw new RuntimeException("info日志文件不存在");
+        }
+        if (!errorFile.exists()) {
+            throw new RuntimeException("error日志文件不存在");
         }
 
         MimeMessage message = mailSender.createMimeMessage();
@@ -41,9 +45,10 @@ public class MailServiceImpl implements MailService {
 
             helper.setFrom(fromEmail);
             helper.setTo(toEmail);
-            helper.setSubject("日志文件 - application.log");
+            helper.setSubject("日志文件 - [INFO, ERROR]");
             helper.setText("请查看附件中的日志文件", false);
-            helper.addAttachment("application.log", new FileSystemResource(logFile));
+            helper.addAttachment("info.log", new FileSystemResource(infoFile));
+            helper.addAttachment("error.log", new FileSystemResource(errorFile));
 
             mailSender.send(message);
 

@@ -36,7 +36,7 @@ public class ActionAspect {
 
         log.warn("QQId {} 或 QQUserId {} 没有执行动作 {} 的权限，操作已跳过。", EventUtil.getQqId(event), EventUtil.getQqUserId(event), action.value());
 
-        return event.replyAsync("没有权限！");
+        return event.replyAsync("你有权限吗？");
     }
 
 }

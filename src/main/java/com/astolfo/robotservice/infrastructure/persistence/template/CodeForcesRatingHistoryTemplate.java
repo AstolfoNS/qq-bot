@@ -70,7 +70,7 @@ public class CodeForcesRatingHistoryTemplate {
             String handle,
             int skipCount
     ) {
-        return EventUtil.merge(titleToMessages(handle, codeForcesRatingHistoryDTOList.size()), contextToMessages(codeForcesRatingHistoryDTOList, skipCount));
+        return EventUtil.merge(this.titleToMessages(handle, codeForcesRatingHistoryDTOList.size()), this.contextToMessages(codeForcesRatingHistoryDTOList, skipCount));
     }
 
 }

@@ -23,8 +23,6 @@ public class QqIdActionEntity {
 
     private String actionName;
 
-    private Boolean isCommon;
-
     private LocalDateTime createTime;
 
     private Boolean isDeleted;

@@ -15,7 +15,7 @@ public class ServletUtil {
 
 
     public void renderString(HttpServletResponse response, String string) throws IOException {
-        renderString(response, HttpServletResponse.SC_OK, string);
+        this.renderString(response, HttpServletResponse.SC_OK, string);
     }
 
     public void renderString(
@@ -31,7 +31,7 @@ public class ServletUtil {
     }
 
     public void renderJson(HttpServletResponse response, Object data) throws IOException {
-        renderString(response, objectMapper.writeValueAsString(data));
+        this.renderString(response, objectMapper.writeValueAsString(data));
     }
 
 }
