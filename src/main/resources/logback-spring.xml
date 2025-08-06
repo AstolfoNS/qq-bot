@@ -2,11 +2,11 @@
 <configuration scan="true" scanPeriod="60 seconds">
 
     <property name="LOG_HOME" value="logs" />
-    <property name="CONSOLE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{36}) - %msg%n" />
-    <property name="FILE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n" />
     <property name="MAX_FILE_SIZE" value="100MB" />
     <property name="MAX_HISTORY" value="30" />
     <property name="TOTAL_SIZE_CAP" value="10GB" />
+    <property name="CONSOLE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) [${PID:-}] [%-15.15thread] %cyan(%-40.40logger{36}) : %msg%n%throwable"/>
+    <property name="FILE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [${PID:-}] [%-15.15thread] %-40.40logger{36} : %msg%n%throwable"/>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -53,36 +53,10 @@
         </encoder>
     </appender>
 
-    <appender name="ASYNC_INFO" class="ch.qos.logback.classic.AsyncAppender">
-        <discardingThreshold>0</discardingThreshold>
-        <queueSize>256</queueSize>
-        <appender-ref ref="INFO_FILE" />
-    </appender>
-    <appender name="ASYNC_ERROR" class="ch.qos.logback.classic.AsyncAppender">
-        <discardingThreshold>0</discardingThreshold>
-        <queueSize>256</queueSize>
-        <appender-ref ref="ERROR_FILE" />
-    </appender>
-
-
-    <springProfile name="dev">
-        <logger name="com.your.package" level="DEBUG"/> <root level="INFO">
-        <appender-ref ref="CONSOLE" />
-        <appender-ref ref="INFO_FILE" />
-        <appender-ref ref="ERROR_FILE" />
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="INFO_FILE"/>
+        <appender-ref ref="ERROR_FILE"/>
     </root>
-    </springProfile>
-
-    <springProfile name="prod, test">
-        <logger name="org.springframework" level="WARN"/>
-        <logger name="org.hibernate" level="WARN"/>
-        <logger name="com.zaxxer.hikari" level="WARN"/>
-
-        <root level="INFO">
-             <appender-ref ref="CONSOLE" />
-            <appender-ref ref="ASYNC_INFO" />
-            <appender-ref ref="ASYNC_ERROR" />
-        </root>
-    </springProfile>
 
 </configuration>
