@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.stereotype.Component; // 引入 @Component 注解
 
 import java.time.Instant;
@@ -15,7 +14,7 @@ import java.util.Objects;
 
 @Slf4j
 @Component
-public class TimeConverterUtil {
+public class TimeConverterUtils {
 
     @Resource
     private ObjectMapper objectMapper;

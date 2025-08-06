@@ -1,7 +1,7 @@
 package com.astolfo.robotservice.domain.listener;
 
 import com.astolfo.robotservice.infrastructure.common.annotations.Action;
-import com.astolfo.robotservice.infrastructure.common.utils.CommonUtil;
+import com.astolfo.robotservice.infrastructure.common.utils.CommonUtils;
 import com.astolfo.robotservice.infrastructure.common.constants.CodeForcesConstant;
 import com.astolfo.robotservice.domain.service.CodeForcesService;
 import io.micrometer.common.util.StringUtils;
@@ -65,7 +65,7 @@ public class CodeForcesListener {
                         handle,
                         Optional
                                 .ofNullable(numberString)
-                                .map(CommonUtil::praseIntElseMax)
+                                .map(CommonUtils::praseIntElseMax)
                                 .orElse(CodeForcesConstant.MAX_RATING_HISTORY_SIZE)
                 )
                 .flatMap(messages -> Mono.fromFuture(event.replyAsync(messages)))

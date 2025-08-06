@@ -1,7 +1,7 @@
 package com.astolfo.robotservice.domain.listener;
 
 import com.astolfo.robotservice.infrastructure.common.annotations.Action;
-import com.astolfo.robotservice.infrastructure.common.utils.CommonUtil;
+import com.astolfo.robotservice.infrastructure.common.utils.CommonUtils;
 import com.astolfo.robotservice.infrastructure.common.enums.R18Enum;
 import com.astolfo.robotservice.domain.service.LoliconService;
 import jakarta.annotation.Resource;
@@ -38,7 +38,7 @@ public class LoliconListener {
                         R18Enum.typeOf(r18).getValue(),
                         Optional
                                 .ofNullable(num)
-                                .map(CommonUtil::praseIntElseMax)
+                                .map(CommonUtils::praseIntElseMax)
                                 .orElse(1),
                         Optional
                                 .ofNullable(keyword)

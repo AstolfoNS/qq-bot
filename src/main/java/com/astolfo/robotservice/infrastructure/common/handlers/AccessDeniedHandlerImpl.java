@@ -2,7 +2,7 @@ package com.astolfo.robotservice.infrastructure.common.handlers;
 
 import com.astolfo.robotservice.infrastructure.common.enums.HttpCode;
 import com.astolfo.robotservice.infrastructure.common.responses.R;
-import com.astolfo.robotservice.infrastructure.common.utils.ServletUtil;
+import com.astolfo.robotservice.infrastructure.common.utils.ServletUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,7 +16,7 @@ import java.io.IOException;
 public class AccessDeniedHandlerImpl implements AccessDeniedHandler {
 
     @Resource
-    private ServletUtil servletUtil;
+    private ServletUtils servletUtils;
 
 
     @Override
@@ -25,7 +25,7 @@ public class AccessDeniedHandlerImpl implements AccessDeniedHandler {
             HttpServletResponse response,
             AccessDeniedException accessDeniedException
     ) throws IOException {
-        servletUtil.renderJson(response, R.failure(HttpCode.FORBIDDEN));
+        servletUtils.renderJson(response, R.failure(HttpCode.FORBIDDEN));
     }
 
 }

@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class EventUtil {
+public class EventUtils {
 
     public static Messages merge(Messages... messages) {
         return Messages.of(
@@ -27,13 +27,13 @@ public class EventUtil {
     }
 
     public static List<Message.Element> analysisToElementList(MessageEvent event) {
-        return new ArrayList<>(EventUtil.analysisToMessages(event).toList());
+        return new ArrayList<>(EventUtils.analysisToMessages(event).toList());
     }
 
    public static List<Message.Element> removePrefix(MessageEvent event, String prefix) {
-       List<Message.Element> elementList = EventUtil.analysisToElementList(event);
+       List<Message.Element> elementList = EventUtils.analysisToElementList(event);
 
-       elementList.set(0, Text.of(TextElementUtil.getText(elementList.getFirst()).substring(prefix.length())));
+       elementList.set(0, Text.of(TextElementUtils.getText(elementList.getFirst()).substring(prefix.length())));
 
        return elementList;
    }
@@ -42,9 +42,9 @@ public class EventUtil {
         return inputElementList
                 .stream()
                 .flatMap(element -> {
-                    if (TextElementUtil.hasText(element)) {
+                    if (TextElementUtils.hasText(element)) {
                         return Arrays
-                                .stream(TextElementUtil.getText(element).split("(?<=\\s)|(?=\\s+)"))
+                                .stream(TextElementUtils.getText(element).split("(?<=\\s)|(?=\\s+)"))
                                 .map(token -> token.isBlank() ? WhitespaceElement.INSTANCE : Text.of(token));
                     }
                     return Stream.of(element);

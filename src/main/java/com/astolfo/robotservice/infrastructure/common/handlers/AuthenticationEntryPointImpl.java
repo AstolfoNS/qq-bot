@@ -2,7 +2,7 @@ package com.astolfo.robotservice.infrastructure.common.handlers;
 
 import com.astolfo.robotservice.infrastructure.common.enums.HttpCode;
 import com.astolfo.robotservice.infrastructure.common.responses.R;
-import com.astolfo.robotservice.infrastructure.common.utils.ServletUtil;
+import com.astolfo.robotservice.infrastructure.common.utils.ServletUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,7 +16,7 @@ import java.io.IOException;
 public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
 
     @Resource
-    private ServletUtil servletUtil;
+    private ServletUtils servletUtils;
 
 
     @Override
@@ -25,7 +25,7 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
             HttpServletResponse response,
             AuthenticationException authException
     ) throws IOException {
-        servletUtil.renderJson(response, R.failure(HttpCode.UNAUTHORIZED));
+        servletUtils.renderJson(response, R.failure(HttpCode.UNAUTHORIZED));
     }
 
 }

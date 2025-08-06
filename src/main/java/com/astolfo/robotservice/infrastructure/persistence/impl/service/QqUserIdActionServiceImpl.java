@@ -2,7 +2,7 @@ package com.astolfo.robotservice.infrastructure.persistence.impl.service;
 
 import com.astolfo.robotservice.domain.service.QqUserIdActionService;
 import com.astolfo.robotservice.infrastructure.common.constants.RedisCacheConstant;
-import com.astolfo.robotservice.infrastructure.common.utils.RedisCacheUtil;
+import com.astolfo.robotservice.infrastructure.common.utils.RedisCacheUtils;
 import com.astolfo.robotservice.infrastructure.persistence.mapper.QqUserIdActionMapper;
 import com.astolfo.robotservice.infrastructure.persistence.model.entity.QqUserIdActionEntity;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -20,7 +20,7 @@ import java.util.Objects;
 public class QqUserIdActionServiceImpl extends ServiceImpl<QqUserIdActionMapper, QqUserIdActionEntity> implements QqUserIdActionService {
 
     @Resource
-    private RedisCacheUtil redisCacheUtil;
+    private RedisCacheUtils redisCacheUtils;
 
     @Resource
     private QqUserIdActionMapper qqUserIdActionMapper;
@@ -34,15 +34,15 @@ public class QqUserIdActionServiceImpl extends ServiceImpl<QqUserIdActionMapper,
                         .orderByAsc(QqUserIdActionEntity::getActionName)
         );
 
-        redisCacheUtil.delete(RedisCacheConstant.QQ_USER_ID_PREFIX.concat(qqUserId));
-        redisCacheUtil.setList(RedisCacheConstant.QQ_USER_ID_PREFIX.concat(qqUserId), qqUserIdActionEntityList);
+        redisCacheUtils.delete(RedisCacheConstant.QQ_USER_ID_PREFIX.concat(qqUserId));
+        redisCacheUtils.setList(RedisCacheConstant.QQ_USER_ID_PREFIX.concat(qqUserId), qqUserIdActionEntityList);
 
         return qqUserIdActionEntityList;
     }
 
     @Override
     public List<QqUserIdActionEntity> fetchListByQqUserId(String qqUserId) {
-        List<QqUserIdActionEntity> qqUserIdActionEntityList = redisCacheUtil.getListOrNull(RedisCacheConstant.QQ_USER_ID_PREFIX.concat(qqUserId));
+        List<QqUserIdActionEntity> qqUserIdActionEntityList = redisCacheUtils.getListOrNull(RedisCacheConstant.QQ_USER_ID_PREFIX.concat(qqUserId));
 
         return Objects.isNull(qqUserIdActionEntityList) ? this.updateCacheList(qqUserId) : qqUserIdActionEntityList;
     }

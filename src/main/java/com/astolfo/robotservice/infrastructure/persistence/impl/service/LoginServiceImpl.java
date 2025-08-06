@@ -1,7 +1,7 @@
 package com.astolfo.robotservice.infrastructure.persistence.impl.service;
 
-import com.astolfo.robotservice.infrastructure.common.utils.JwtUtil;
-import com.astolfo.robotservice.infrastructure.common.utils.RedisCacheUtil;
+import com.astolfo.robotservice.infrastructure.common.utils.JwtUtils;
+import com.astolfo.robotservice.infrastructure.common.utils.RedisCacheUtils;
 import com.astolfo.robotservice.infrastructure.common.constants.RedisCacheConstant;
 import com.astolfo.robotservice.infrastructure.common.details.LoginUser;
 import com.astolfo.robotservice.infrastructure.persistence.model.dto.LoginRequestDTO;
@@ -21,10 +21,10 @@ import java.time.LocalDateTime;
 public class LoginServiceImpl implements LoginService {
 
     @Resource
-    private RedisCacheUtil redisCacheUtil;
+    private RedisCacheUtils redisCacheUtils;
 
     @Resource
-    private JwtUtil jwtUtil;
+    private JwtUtils jwtUtils;
 
     @Resource
     private AuthenticationService authenticationService;
@@ -38,7 +38,7 @@ public class LoginServiceImpl implements LoginService {
         LoginUser loginUser = authenticationService.getLoginUserByLoginRequest(loginRequestDTO);
 
         try {
-            redisCacheUtil.set(RedisCacheConstant.Login_USER_PERFIX.concat(loginUser.getIdToString()), loginUser);
+            redisCacheUtils.set(RedisCacheConstant.Login_USER_PERFIX.concat(loginUser.getIdToString()), loginUser);
 
             UserEntity userEntity = userService.getById(loginUser.getId());
 
@@ -46,7 +46,7 @@ public class LoginServiceImpl implements LoginService {
 
             userService.updateById(userEntity);
 
-            return new LoginTokenVO(userEntity, jwtUtil.generateToken(loginUser));
+            return new LoginTokenVO(userEntity, jwtUtils.generateToken(loginUser));
         } catch (Exception exception) {
             log.error("登录失败，错误信息: {}", exception.getMessage());
 

@@ -2,8 +2,8 @@ package com.astolfo.robotservice.infrastructure.common.handlers;
 
 import com.astolfo.robotservice.infrastructure.common.enums.HttpCode;
 import com.astolfo.robotservice.infrastructure.common.details.LoginUser;
-import com.astolfo.robotservice.infrastructure.common.utils.JwtUtil;
-import com.astolfo.robotservice.infrastructure.common.utils.RedisCacheUtil;
+import com.astolfo.robotservice.infrastructure.common.utils.JwtUtils;
+import com.astolfo.robotservice.infrastructure.common.utils.RedisCacheUtils;
 import com.astolfo.robotservice.infrastructure.common.constants.RedisCacheConstant;
 import com.astolfo.robotservice.domain.service.AuthenticationService;
 import jakarta.annotation.Resource;
@@ -26,10 +26,10 @@ import java.util.Optional;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Resource
-    private JwtUtil jwtUtil;
+    private JwtUtils jwtUtils;
 
     @Resource
-    private RedisCacheUtil redisCacheUtil;
+    private RedisCacheUtils redisCacheUtils;
 
     @Lazy
     @Resource
@@ -53,7 +53,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = authHeader.substring("Bearer ".length());
 
         try {
-            Optional<LoginUser> optionalLoginUser = Optional.of(redisCacheUtil.get(RedisCacheConstant.Login_USER_PERFIX.concat(jwtUtil.parseToken(token).getStringId())));
+            Optional<LoginUser> optionalLoginUser = Optional.of(redisCacheUtils.get(RedisCacheConstant.Login_USER_PERFIX.concat(jwtUtils.parseToken(token).getStringId())));
 
             optionalLoginUser.ifPresent(loginUser -> authenticationService.setAuthentication(loginUser));
         } catch (Exception exception) {

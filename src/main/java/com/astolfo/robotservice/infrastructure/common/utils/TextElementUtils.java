@@ -4,7 +4,7 @@ import love.forte.simbot.component.onebot.v11.message.segment.OneBotText;
 import love.forte.simbot.message.Message;
 import love.forte.simbot.message.Text;
 
-public class TextElementUtil {
+public class TextElementUtils {
 
     public static String getText(Message.Element element) {
        if (element instanceof OneBotText.Element textElement) {

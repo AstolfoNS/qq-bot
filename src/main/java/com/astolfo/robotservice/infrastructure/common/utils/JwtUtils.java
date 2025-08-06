@@ -15,7 +15,7 @@ import java.util.Objects;
 
 @Slf4j
 @Component
-public class JwtUtil {
+public class JwtUtils {
 
     @Resource
     private JwtEncoder jwtEncoder;

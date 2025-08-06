@@ -3,7 +3,7 @@ package com.astolfo.robotservice.infrastructure.common.aspects;
 import com.astolfo.robotservice.domain.service.QqIdActionService;
 import com.astolfo.robotservice.domain.service.QqUserIdActionService;
 import com.astolfo.robotservice.infrastructure.common.annotations.Action;
-import com.astolfo.robotservice.infrastructure.common.utils.EventUtil;
+import com.astolfo.robotservice.infrastructure.common.utils.EventUtils;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import love.forte.simbot.event.MessageEvent;
@@ -25,7 +25,7 @@ public class ActionAspect {
 
 
     private boolean hasPermission(MessageEvent event, String actionName) {
-        return qqIdActionService.hasPermission(EventUtil.getQqId(event), actionName) || qqUserIdActionService.hasPermission(EventUtil.getQqUserId(event), actionName);
+        return qqIdActionService.hasPermission(EventUtils.getQqId(event), actionName) || qqUserIdActionService.hasPermission(EventUtils.getQqUserId(event), actionName);
     }
 
     @Around("@annotation(action) && args(event, ..)")
@@ -34,7 +34,7 @@ public class ActionAspect {
             return joinPoint.proceed();
         }
 
-        log.warn("QQId {} 或 QQUserId {} 没有执行动作 {} 的权限，操作已跳过。", EventUtil.getQqId(event), EventUtil.getQqUserId(event), action.value());
+        log.warn("QQId {} 或 QQUserId {} 没有执行动作 {} 的权限，操作已跳过。", EventUtils.getQqId(event), EventUtils.getQqUserId(event), action.value());
 
         return event.replyAsync("你有权限吗？");
     }

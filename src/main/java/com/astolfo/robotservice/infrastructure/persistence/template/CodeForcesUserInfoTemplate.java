@@ -1,7 +1,7 @@
 package com.astolfo.robotservice.infrastructure.persistence.template;
 
 import com.astolfo.robotservice.infrastructure.persistence.model.dto.CodeForcesUserInfoDTO;
-import com.astolfo.robotservice.infrastructure.common.utils.TimeConverterUtil;
+import com.astolfo.robotservice.infrastructure.common.utils.TimeConverterUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.annotation.Resource;
 import love.forte.simbot.message.Messages;
@@ -16,7 +16,7 @@ import java.util.List;
 public class CodeForcesUserInfoTemplate {
 
     @Resource
-    private TimeConverterUtil timeConverterUtil;
+    private TimeConverterUtils timeConverterUtils;
 
 
     public Messages toMessages(CodeForcesUserInfoDTO codeForcesUserInfoDTO) throws JsonProcessingException {
@@ -42,7 +42,7 @@ public class CodeForcesUserInfoTemplate {
                         codeForcesUserInfoDTO.getRank(),
                         codeForcesUserInfoDTO.getRating(),
                         codeForcesUserInfoDTO.getMaxRating(),
-                        codeForcesUserInfoDTO.getHandle(), timeConverterUtil.secondsToDateString(codeForcesUserInfoDTO.getLastOnlineTimeSeconds())
+                        codeForcesUserInfoDTO.getHandle(), timeConverterUtils.secondsToDateString(codeForcesUserInfoDTO.getLastOnlineTimeSeconds())
                )))
                .build();
     }

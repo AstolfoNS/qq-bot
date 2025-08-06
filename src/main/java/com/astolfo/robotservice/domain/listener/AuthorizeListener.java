@@ -4,7 +4,7 @@ import com.astolfo.robotservice.domain.service.ActionService;
 import com.astolfo.robotservice.domain.service.QqIdActionService;
 import com.astolfo.robotservice.domain.service.QqUserIdActionService;
 import com.astolfo.robotservice.infrastructure.common.annotations.Action;
-import com.astolfo.robotservice.infrastructure.common.utils.EventUtil;
+import com.astolfo.robotservice.infrastructure.common.utils.EventUtils;
 import com.astolfo.robotservice.infrastructure.persistence.model.entity.ActionEntity;
 import com.astolfo.robotservice.infrastructure.persistence.model.entity.QqIdActionEntity;
 import com.astolfo.robotservice.infrastructure.persistence.model.entity.QqUserIdActionEntity;
@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
@@ -40,11 +41,11 @@ public class AuthorizeListener {
 
 
     public Messages getAuthListMessagesByQqUserId(String qqUserId) {
-        return createAuthListMessages(qqUserId, qqUserIdActionService.fetchListByQqUserId(qqUserId), QqUserIdActionEntity::getActionName);
+        return this.createAuthListMessages(qqUserId, qqUserIdActionService.fetchListByQqUserId(qqUserId), QqUserIdActionEntity::getActionName);
     }
 
     public Messages getAuthListMessagesByQqId(String qqId) {
-        return createAuthListMessages(qqId, qqIdActionService.fetchListByQqId(qqId), QqIdActionEntity::getActionName);
+        return this.createAuthListMessages(qqId, qqIdActionService.fetchListByQqId(qqId), QqIdActionEntity::getActionName);
     }
 
     private <T> Messages createAuthListMessages(String id, List<T> entityList, Function<T, String> actionNameMapper) {
@@ -62,7 +63,7 @@ public class AuthorizeListener {
             );
         }
 
-        return EventUtil.merge(StringTemplate.toMessages(id + " auth list: "), context);
+        return EventUtils.merge(StringTemplate.toMessages(id + " auth list: "), context);
     }
 
 
@@ -75,18 +76,10 @@ public class AuthorizeListener {
             @FilterValue(value = "number", required = false) String number
     ) {
         if ("--person".equals(object)) {
-            if (Objects.isNull(number)) {
-                number = EventUtil.getQqUserId(event);
-            }
-
-            return event.replyAsync(this.getAuthListMessagesByQqUserId(number));
+            return event.replyAsync(this.getAuthListMessagesByQqUserId(Optional.ofNullable(number).orElse(EventUtils.getQqUserId(event))));
         }
         if ("--group".equals(object)) {
-            if (Objects.isNull(number)) {
-                number = EventUtil.getQqId(event);
-            }
-
-            return event.replyAsync(this.getAuthListMessagesByQqId(number));
+            return event.replyAsync(this.getAuthListMessagesByQqId(Optional.ofNullable(number).orElse(EventUtils.getQqId(event))));
         }
 
         return event.replyAsync("未知错误！");
@@ -108,7 +101,7 @@ public class AuthorizeListener {
 
         if ("--person".equals(object)) {
             if (Objects.isNull(number)) {
-                number = EventUtil.getQqUserId(event);
+                number = EventUtils.getQqUserId(event);
             }
 
             if ("del".equals(operation) && qqUserIdActionService.delPermission(number, actionName) > 0) {
@@ -123,7 +116,7 @@ public class AuthorizeListener {
         }
         if ("--group".equals(object)) {
             if (Objects.isNull(number)) {
-                number = EventUtil.getQqId(event);
+                number = EventUtils.getQqId(event);
             }
 
             if ("del".equals(operation) && qqIdActionService.delPermission(number, actionName) > 0) {

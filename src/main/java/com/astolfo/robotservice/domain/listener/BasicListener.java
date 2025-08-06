@@ -2,11 +2,8 @@ package com.astolfo.robotservice.domain.listener;
 
 import com.astolfo.robotservice.domain.service.*;
 import com.astolfo.robotservice.infrastructure.common.annotations.Action;
-import com.astolfo.robotservice.infrastructure.common.utils.CommonUtil;
-import com.astolfo.robotservice.infrastructure.common.utils.EventUtil;
-import com.astolfo.robotservice.infrastructure.persistence.model.entity.ActionEntity;
-import com.astolfo.robotservice.infrastructure.persistence.model.entity.QqIdActionEntity;
-import com.astolfo.robotservice.infrastructure.persistence.model.entity.QqUserIdActionEntity;
+import com.astolfo.robotservice.infrastructure.common.utils.CommonUtils;
+import com.astolfo.robotservice.infrastructure.common.utils.EventUtils;
 import com.astolfo.robotservice.infrastructure.persistence.model.entity.UserEntity;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import jakarta.annotation.Resource;
@@ -16,7 +13,6 @@ import love.forte.simbot.message.*;
 import love.forte.simbot.quantcat.common.annotations.Filter;
 import love.forte.simbot.quantcat.common.annotations.FilterValue;
 import love.forte.simbot.quantcat.common.annotations.Listener;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -42,24 +38,24 @@ public class BasicListener {
             log.info("class: {}", element.getClass());
         }
 
-        return event.replyAsync(Messages.of(EventUtil.removePrefix(event, "/chat ")));
+        return event.replyAsync(Messages.of(EventUtils.removePrefix(event, "/chat ")));
     }
 
     @Action("Basic.roll()")
     @Filter("^/roll\\s+[\\s\\S]*")
     @Listener
     public CompletableFuture<?> roll(MessageEvent event) {
-        List<Message.Element> inputElements = EventUtil.removePrefix(event, "/roll ");
+        List<Message.Element> inputElements = EventUtils.removePrefix(event, "/roll ");
 
-        List<Message.Element> tokens = EventUtil.splitByWhitespace(inputElements);
+        List<Message.Element> tokens = EventUtils.splitByWhitespace(inputElements);
 
-        List<List<Message.Element>> options = EventUtil.groupByWhitespace(tokens);
+        List<List<Message.Element>> options = EventUtils.groupByWhitespace(tokens);
 
         if (options.isEmpty()) {
             return event.replyAsync(Messages.of(Text.of("error: 无效的选项。")));
         }
 
-        return event.replyAsync(Messages.of(options.get((int) CommonUtil.randomFromZero(options.size() - 1))));
+        return event.replyAsync(Messages.of(options.get((int) CommonUtils.randomFromZero(options.size() - 1))));
     }
 
     @Action("basic.rand()")
@@ -77,7 +73,7 @@ public class BasicListener {
             long min = Math.min(number1, number2);
             long max = Math.max(number1, number2);
 
-            return event.replyAsync(String.valueOf(CommonUtil.random(min, max)));
+            return event.replyAsync(String.valueOf(CommonUtils.random(min, max)));
         } catch (NumberFormatException exception) {
             return event.replyAsync("error: 输入数字过大无法计算。");
         }

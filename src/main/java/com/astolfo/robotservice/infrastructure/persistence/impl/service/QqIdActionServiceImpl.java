@@ -2,7 +2,7 @@ package com.astolfo.robotservice.infrastructure.persistence.impl.service;
 
 import com.astolfo.robotservice.domain.service.QqIdActionService;
 import com.astolfo.robotservice.infrastructure.common.constants.RedisCacheConstant;
-import com.astolfo.robotservice.infrastructure.common.utils.RedisCacheUtil;
+import com.astolfo.robotservice.infrastructure.common.utils.RedisCacheUtils;
 import com.astolfo.robotservice.infrastructure.persistence.mapper.QqIdActionMapper;
 import com.astolfo.robotservice.infrastructure.persistence.model.entity.QqIdActionEntity;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -21,7 +21,7 @@ public class QqIdActionServiceImpl extends ServiceImpl<QqIdActionMapper, QqIdAct
     private QqIdActionMapper qqIdActionMapper;
 
     @Resource
-    private RedisCacheUtil redisCacheUtil;
+    private RedisCacheUtils redisCacheUtils;
 
 
     public List<QqIdActionEntity> updateCacheList(String qqId) {
@@ -32,15 +32,15 @@ public class QqIdActionServiceImpl extends ServiceImpl<QqIdActionMapper, QqIdAct
                         .orderByAsc(QqIdActionEntity::getActionName)
             );
 
-        redisCacheUtil.delete(RedisCacheConstant.QQ_ID_PREFIX.concat(qqId));
-        redisCacheUtil.setList(RedisCacheConstant.QQ_ID_PREFIX.concat(qqId), qqIdActionEntityList);
+        redisCacheUtils.delete(RedisCacheConstant.QQ_ID_PREFIX.concat(qqId));
+        redisCacheUtils.setList(RedisCacheConstant.QQ_ID_PREFIX.concat(qqId), qqIdActionEntityList);
 
         return qqIdActionEntityList;
     }
 
     @Override
     public List<QqIdActionEntity> fetchListByQqId(String qqId) {
-        List<QqIdActionEntity> qqIdActionEntityList = redisCacheUtil.getListOrNull(RedisCacheConstant.QQ_ID_PREFIX.concat(qqId));
+        List<QqIdActionEntity> qqIdActionEntityList = redisCacheUtils.getListOrNull(RedisCacheConstant.QQ_ID_PREFIX.concat(qqId));
 
         return Objects.isNull(qqIdActionEntityList) ? this.updateCacheList(qqId) : qqIdActionEntityList;
     }
