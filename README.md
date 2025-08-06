@@ -181,7 +181,7 @@
     }
     ```
 
-    > tips: JSON 配置文件不允许使用注释，这里只是方便展示，详见[simbot 官方文档](https://simbot.forte.love/component-onebot-v11-bot-config.html)查看配置。
+    > tips: JSON 配置文件不允许使用注释，这里只是方便展示，详见[Simbot 官方文档](https://simbot.forte.love/component-onebot-v11-bot-config.html)查看配置。
 
 2.  **启动 NapCat (或你的 QQ 机器人客户端)**:
 
