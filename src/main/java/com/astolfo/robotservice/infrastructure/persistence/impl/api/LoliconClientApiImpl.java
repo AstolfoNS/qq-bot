@@ -28,7 +28,7 @@ public class LoliconClientApiImpl implements LoliconClientApi {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
-                        .path("/setu/v2")
+                        .path("/v2")
                         .queryParam("r18", r18)
                         .queryParam("num", number)
                         .queryParam("keyword", keyword)
