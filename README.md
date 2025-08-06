@@ -80,7 +80,7 @@
 4.  **NapCat 配置**:
 
     - 确保 NapCat 客户端已正确安装并运行。
-    - 在 `simbot-bot/robot.bot.json` 中配置 Simbot 与 NapCat 的连接信息（可配置多个机器人）。
+    - 在 `src/main/resources/simbot-bot/robot.bot.json` 中配置 Simbot 与 NapCat 的连接信息（可配置**多个**机器人，即多个.bot.json文件，文件名随意）。
 
 ---
 
